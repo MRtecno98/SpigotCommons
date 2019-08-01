@@ -1,1 +1,1 @@
-"# Spigot Commons" 
+# Spigot Commons
