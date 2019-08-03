@@ -16,7 +16,7 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import com.spigot.libraries.exceptions.ConflictingFlagsException;
-import com.spigot.libraries.manipulate.ReflectionManipulation;
+import com.spigot.libraries.utility.ReflectionUtils;
 
 public abstract class Command implements CommandExecutor {
 	public static final String DEFAULT_PERM_MESSAGE = "&cYou don't have the permission to do that".replace('&', ChatColor.COLOR_CHAR);
@@ -87,7 +87,7 @@ public abstract class Command implements CommandExecutor {
 	
 	public void unregister() {
 		try {
-			getPluginCommand().unregister((SimpleCommandMap) ReflectionManipulation.getPrivateField(pl.getServer().getPluginManager(), "commandMap"));
+			getPluginCommand().unregister((SimpleCommandMap) ReflectionUtils.getPrivateField(pl.getServer().getPluginManager(), "commandMap"));
 		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
 			e.printStackTrace();
 		}

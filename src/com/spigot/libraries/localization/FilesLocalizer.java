@@ -7,7 +7,7 @@ import java.util.Collection;
 import java.util.List;
 
 import com.spigot.libraries.exceptions.DuplicatedLocaleException;
-import com.spigot.libraries.manipulate.IOManipulation;
+import com.spigot.libraries.utility.IOUtils;
 
 public class FilesLocalizer implements Localizer {
 	List<Locale> locales = new ArrayList<>();
@@ -43,9 +43,9 @@ public class FilesLocalizer implements Localizer {
 			if(support instanceof FileSupport) {
 				FileSupport fp = (FileSupport) support;
 				fp.setFile(new File(maindir, fp.getFile().getName()));
-				if(fp.hasDefault()) IOManipulation.writeToFile(fp.getDefault(), 
+				if(fp.hasDefault()) IOUtils.writeToFile(fp.getDefault(), 
 						fp.getFile());
-				else IOManipulation.createNewFile(fp.getFile());
+				else IOUtils.createNewFile(fp.getFile());
 				fp.reloadSupport();
 			}else throw new IllegalArgumentException("Can't register a non-file support");
 		}
@@ -58,7 +58,7 @@ public class FilesLocalizer implements Localizer {
 		if(!isLocaleRegistered(name)) throw new IllegalArgumentException("Unable to remove locale " + name + ", locale is not registered");
 		else {
 			Locale lc = getLocale(name);
-			IOManipulation.deleteDirectory(lc.getDirectory());
+			IOUtils.deleteDirectory(lc.getDirectory());
 			locales.remove(getLocaleIndex(name));
 		}
 	}
