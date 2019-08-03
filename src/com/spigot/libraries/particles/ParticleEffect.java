@@ -28,22 +28,27 @@
 
 package com.spigot.libraries.particles;
 
-import org.bukkit.Color;
-import org.bukkit.Location;
-import org.bukkit.entity.Player;
-import org.bukkit.inventory.ItemStack;
-import com.spigot.libraries.reflection.minecraft.Minecraft;
-import com.spigot.libraries.reflection.resolver.ConstructorResolver;
-import com.spigot.libraries.reflection.resolver.FieldResolver;
-import com.spigot.libraries.reflection.resolver.MethodResolver;
-import com.spigot.libraries.reflection.resolver.minecraft.NMSClassResolver;
+import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.v1_10_R1;
+import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.v1_11_R1;
+import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.v1_7_R1;
+import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.v1_8_R1;
+import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.v1_9_R1;
 
 import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 
-import static com.spigot.libraries.reflection.minecraft.Minecraft.Version.*;
+import org.bukkit.Color;
+import org.bukkit.Location;
+import org.bukkit.entity.Player;
+import org.bukkit.inventory.ItemStack;
+
+import com.spigot.libraries.reflection.minecraft.Minecraft;
+import com.spigot.libraries.reflection.resolver.ConstructorResolver;
+import com.spigot.libraries.reflection.resolver.FieldResolver;
+import com.spigot.libraries.reflection.resolver.MethodResolver;
+import com.spigot.libraries.reflection.resolver.minecraft.NMSClassResolver;
 
 @SuppressWarnings("all")
 public enum ParticleEffect {

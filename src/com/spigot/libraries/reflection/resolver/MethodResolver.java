@@ -1,9 +1,9 @@
 package com.spigot.libraries.reflection.resolver;
 
+import java.lang.reflect.Method;
+
 import com.spigot.libraries.reflection.resolver.wrapper.MethodWrapper;
 import com.spigot.libraries.reflection.util.AccessUtil;
-
-import java.lang.reflect.Method;
 
 /**
  * Resolver for methods

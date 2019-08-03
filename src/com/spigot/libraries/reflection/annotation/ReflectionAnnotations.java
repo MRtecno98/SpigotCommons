@@ -1,5 +1,11 @@
 package com.spigot.libraries.reflection.annotation;
 
+import java.lang.annotation.Annotation;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import com.spigot.libraries.reflection.minecraft.Minecraft;
 import com.spigot.libraries.reflection.resolver.ClassResolver;
 import com.spigot.libraries.reflection.resolver.FieldResolver;
@@ -7,12 +13,6 @@ import com.spigot.libraries.reflection.resolver.MethodResolver;
 import com.spigot.libraries.reflection.resolver.wrapper.ClassWrapper;
 import com.spigot.libraries.reflection.resolver.wrapper.FieldWrapper;
 import com.spigot.libraries.reflection.resolver.wrapper.MethodWrapper;
-
-import java.lang.annotation.Annotation;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
 
 public class ReflectionAnnotations {
 

@@ -1,8 +1,8 @@
 package com.spigot.libraries.reflection.resolver;
 
-import com.spigot.libraries.reflection.resolver.wrapper.WrapperAbstract;
-
 import java.lang.reflect.Member;
+
+import com.spigot.libraries.reflection.resolver.wrapper.WrapperAbstract;
 
 /**
  * abstract class to resolve members

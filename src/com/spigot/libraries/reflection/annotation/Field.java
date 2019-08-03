@@ -1,11 +1,11 @@
 package com.spigot.libraries.reflection.annotation;
 
-import com.spigot.libraries.reflection.minecraft.Minecraft;
-
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
 import java.lang.annotation.RetentionPolicy;
 import java.lang.annotation.Target;
+
+import com.spigot.libraries.reflection.minecraft.Minecraft;
 
 /**
  * Resolves the annotated {@link org.inventivetalent.reflection.resolver.wrapper.FieldWrapper} or {@link java.lang.reflect.Field} field to the first matching field name.

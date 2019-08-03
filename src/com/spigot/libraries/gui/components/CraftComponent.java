@@ -9,7 +9,7 @@ import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.inventory.meta.ItemMeta;
 
-public class CraftComponent extends ItemStack {
+public class CraftComponent extends ComparableStack {
 	private Callable<Boolean> action;
 
 	public CraftComponent(ItemStack stack, Callable<Boolean> action) throws IllegalArgumentException {
@@ -78,14 +78,8 @@ public class CraftComponent extends ItemStack {
 	}
 	
 	@Override
-	public boolean equals(Object other) {
-		if(!(other instanceof ItemStack)) return false;
-		ItemStack othercmp = (ItemStack) other;
-		
-		return getType().equals(othercmp.getType()) && 
-				getItemMeta().serialize().equals(othercmp.getItemMeta().serialize()) && 
-				getAmount() == othercmp.getAmount() && 
-				getDurability() == othercmp.getDurability();
+	public CraftComponent clone() {
+		return new CraftComponent(this, getAction());
 	}
 	
 	public boolean execute() throws Exception {

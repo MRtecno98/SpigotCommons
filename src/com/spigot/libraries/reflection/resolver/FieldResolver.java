@@ -1,9 +1,9 @@
 package com.spigot.libraries.reflection.resolver;
 
+import java.lang.reflect.Field;
+
 import com.spigot.libraries.reflection.resolver.wrapper.FieldWrapper;
 import com.spigot.libraries.reflection.util.AccessUtil;
-
-import java.lang.reflect.Field;
 
 /**
  * Resolver for fields

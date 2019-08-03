@@ -1,20 +1,22 @@
 package com.spigot.libraries.reflection.minecraft;
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.Field;
+import java.lang.reflect.Method;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Entity;
+
 import com.spigot.libraries.reflection.resolver.ConstructorResolver;
 import com.spigot.libraries.reflection.resolver.FieldResolver;
 import com.spigot.libraries.reflection.resolver.MethodResolver;
 import com.spigot.libraries.reflection.resolver.minecraft.NMSClassResolver;
 import com.spigot.libraries.reflection.resolver.minecraft.OBCClassResolver;
 import com.spigot.libraries.reflection.util.AccessUtil;
-import sun.reflect.ConstructorAccessor;
 
-import java.lang.reflect.Constructor;
-import java.lang.reflect.Field;
-import java.lang.reflect.Method;
-import java.util.regex.Matcher;
-import java.util.regex.Pattern;
+import sun.reflect.ConstructorAccessor;
 
 /**
  * Helper class to access minecraft/bukkit specific objects

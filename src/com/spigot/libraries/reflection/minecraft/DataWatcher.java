@@ -1,13 +1,16 @@
 package com.spigot.libraries.reflection.minecraft;
 
-import com.spigot.libraries.reflection.resolver.*;
-import com.spigot.libraries.reflection.resolver.minecraft.NMSClassResolver;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.Arrays;
 import java.util.Map;
+
+import com.spigot.libraries.reflection.resolver.ConstructorResolver;
+import com.spigot.libraries.reflection.resolver.FieldResolver;
+import com.spigot.libraries.reflection.resolver.MethodResolver;
+import com.spigot.libraries.reflection.resolver.ResolverQuery;
+import com.spigot.libraries.reflection.resolver.minecraft.NMSClassResolver;
 
 @SuppressWarnings({"unchecked", "rawtypes"})
 public class DataWatcher {
