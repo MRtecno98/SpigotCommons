@@ -1,5 +1,6 @@
 package com.spigot.libraries.gui.components;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.Callable;
 
@@ -45,6 +46,7 @@ public class CraftComponent extends ItemStack {
 	public CraftComponent addLore(String... lines) { 
 		ItemMeta meta = getItemMeta();
 			List<String> lore = meta.getLore();
+			lore = lore == null ? new ArrayList<>() : lore;
 				for(String line : lines) lore.add(line);
 			meta.setLore(lore);
 		setItemMeta(meta);

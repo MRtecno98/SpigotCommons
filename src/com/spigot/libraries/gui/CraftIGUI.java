@@ -50,7 +50,7 @@ public abstract class CraftIGUI extends IGUI {
 	public CraftComponent getComponent(int i) {
 		CraftComponent component = components.get(i);
 		if(component != null && component.equals(inv.getItem(i))) return component;
-		else throw new RuntimeException("Discrepancy between internal and external registry");
+		else throw new RuntimeException("Discrepancy between internal and external registry, did you use direct inventory set?");
 	}
 	
 	@Override
