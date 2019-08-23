@@ -3,13 +3,12 @@ package com.spigot.libraries.config;
 import java.util.List;
 import java.util.Map.Entry;
 
+import org.bukkit.Bukkit;
 import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.enchantments.Enchantment;
 import org.bukkit.inventory.ItemFlag;
 import org.bukkit.inventory.meta.ItemMeta;
-
-import com.spigot.libraries.plugin.PluginContainer;
 
 public class ItemMetaSection extends MappedAbstractionSection {
 	public static final String NAME_KEY = "name";
@@ -27,7 +26,7 @@ public class ItemMetaSection extends MappedAbstractionSection {
 	@Override
 	public void preCloning(Object... data) {
 		super.preCloning(data);
-		this.meta = PluginContainer.getInstance().getPlugin().getServer().getItemFactory().getItemMeta((Material) data[0]);
+		this.meta = Bukkit.getServer().getItemFactory().getItemMeta((Material) data[0]);
 	}
 	
 	@Override

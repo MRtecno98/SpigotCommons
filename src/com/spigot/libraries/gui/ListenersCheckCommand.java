@@ -16,8 +16,8 @@ import com.spigot.libraries.commands.CommandFlag;
 
 public class ListenersCheckCommand extends Command {
 
-	public ListenersCheckCommand(JavaPlugin pl, String label) {
-		super(pl, label, CommandFlag.ONLY_PLAYER);
+	public ListenersCheckCommand(String label) {
+		super(label, CommandFlag.ONLY_PLAYER);
 	}
 
 	@Override
@@ -35,5 +35,5 @@ public class ListenersCheckCommand extends Command {
 		return true;
 	}
 	
-	public static void initializeCommand(JavaPlugin pl) { new ListenersCheckCommand(pl, "checkListeners"); }
+	public static void initializeCommand(JavaPlugin pl) { new ListenersCheckCommand("checkListeners").register(pl); }
 }

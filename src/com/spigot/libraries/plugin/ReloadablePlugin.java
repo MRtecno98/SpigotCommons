@@ -65,7 +65,7 @@ public class ReloadablePlugin extends JavaPlugin {
 	}
 	
 	protected void unloadCommands() {
-		for(Command cmd : commands) cmd.unregister();
+		for(Command cmd : commands) cmd.unregister(this);
 	}
 	
 	public boolean isFirstLoad() {
