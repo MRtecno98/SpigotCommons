@@ -157,12 +157,12 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 		return this;
 	}
 	
-	public boolean register(JavaPlugin pl) {
+	public Command register(JavaPlugin pl) {
 		pl.getLogger().log(Level.INFO, "Registering command /" + getLabel());
 		PluginCommand plcmd = getPluginCommand(pl);
 		plcmd.setExecutor(this);
 		if(pl.getCommand(getLabel()) == null) ReflectionUtils.registerToCommandMap(pl, plcmd);
-		return pl.getCommand(getLabel()) == null;
+		return this;
 	}
 	
 	public void unregister(JavaPlugin pl) {

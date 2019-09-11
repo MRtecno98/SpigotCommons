@@ -22,9 +22,27 @@ public final class ReflectionUtils {
 	 NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
 		Class<?> clazz = object.getClass();
     	Field objectField = clazz.getDeclaredField(field);
+    	
+    	boolean wasAccessible = objectField.isAccessible();
+    	
    		objectField.setAccessible(true);
     	Object result = objectField.get(object);
-    	objectField.setAccessible(false);
+    	objectField.setAccessible(wasAccessible);
+    	
+    	return (T) result;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T getStaticPrivateField(Class<?> clazz, String field) throws NoSuchFieldException, 
+	SecurityException, IllegalArgumentException, IllegalAccessException {
+		Field objectField = clazz.getDeclaredField(field);
+    	
+    	boolean wasAccessible = objectField.isAccessible();
+    	
+   		objectField.setAccessible(true);
+    	Object result = objectField.get(null);
+    	objectField.setAccessible(wasAccessible);
+    	
     	return (T) result;
 	}
 	
