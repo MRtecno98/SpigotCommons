@@ -5,17 +5,19 @@ import java.util.concurrent.Callable;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class ComponentAction<T> implements Callable<T> {
+import com.spigot.libraries.gui.CraftIGUI;
+
+public abstract class ComponentAction implements Callable<Boolean> {
 	private Player p;
-	private JavaPlugin pl;
+	private CraftIGUI gui;
 	
-	public ComponentAction<T> setPlayer(Player p) {
+	public ComponentAction setPlayer(Player p) {
 		this.p = p;
 		return this;
 	}
 	
-	public ComponentAction<T> setPlugin(JavaPlugin pl) {
-		this.pl = pl;
+	public ComponentAction setIGUI(CraftIGUI gui) {
+		this.gui = gui;
 		return this;
 	}
 	
@@ -24,11 +26,15 @@ public abstract class ComponentAction<T> implements Callable<T> {
 	}
 	
 	protected JavaPlugin getPlugin() {
-		return pl;
+		return gui.getPlugin();
+	}
+	
+	protected CraftIGUI getGUI() {
+		return gui;
 	}
 	
 	
-	public static final ComponentAction<Boolean> NOTHING = new ComponentAction<Boolean>() {
+	public static final ComponentAction NOTHING = new ComponentAction() {
 		@Override
 		public Boolean call() throws Exception {
 			return true;

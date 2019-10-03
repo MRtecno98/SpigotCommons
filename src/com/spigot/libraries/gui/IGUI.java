@@ -17,7 +17,11 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.ItemStack;
 import org.bukkit.plugin.java.JavaPlugin;
 
-public abstract class IGUI implements Listener {
+import com.spigot.libraries.utility.Cloneable;
+import com.spigot.libraries.utility.ReflectionUtils;
+import com.spigot.libraries.utility.Signature;
+
+public abstract class IGUI extends Cloneable<IGUI> implements Listener {
 	protected Inventory inv;
 	protected JavaPlugin pl;
 	
@@ -25,9 +29,9 @@ public abstract class IGUI implements Listener {
 	public static List<IGUI> getRegisteredGUIs() { return registeredGUIs; }
 	
 	public IGUI(JavaPlugin pl, InventoryHolder owner, int size, String name) {
-		this.pl = pl;
 		inv = Bukkit.createInventory(owner, size, name);
-		pl.getServer().getPluginManager().registerEvents(this, this.pl);
+		Bukkit.getServer().getPluginManager().registerEvents(this, pl);
+		this.pl = pl;
 		IGUI.registeredGUIs.add(this);
 	}
 	
@@ -37,17 +41,61 @@ public abstract class IGUI implements Listener {
 	
 	@EventHandler
 	public void onInventoryClick(InventoryClickEvent event) {
-		if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR)) { event.setCancelled(true); return; }
-		if(inv.getViewers().get(0).getName().equals(this.inv.getViewers().get(0).getName()))
+		if(event.getViewers().size() == 0) return;
+		if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR)) { return; }
+		if(event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null))
 			event.setCancelled(onClick(event, (Player) event.getWhoClicked(), event.getCurrentItem()));
 	}
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if(inv.getViewers().get(0).getName().equals(this.inv.getViewers().get(0).getName())) dealloc();
+		if(event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null)) dealloc();
 	}
+	
+	@Override
+	public IGUI clone() {
+		return copy(null, null, -1, null);
+	}
+	
+	public IGUI copy(JavaPlugin plugin, InventoryHolder holder, int size, String name) {
+		if(plugin == null) plugin = getPlugin();
+		if(holder == null) holder = getInventory().getHolder();
+		if(size == -1) size = getInventory().getSize();
+		if(name == null) name = getInventory().getName();
+		
+		IGUI clone = ReflectionUtils.constructorClone(this, new Signature().takes(JavaPlugin.class, 
+				InventoryHolder.class, 
+				int.class, 
+				String.class),
+			plugin, holder, size, name);
+	clone.getInventory().setContents(getInventory().getContents());
+	return clone;
+	}
+	
+	@Override
+	public boolean equals(Object other) {
+		if(!(other instanceof IGUI)) return false;
+		return ((IGUI) other).getInventory()
+				.getContents()
+				.equals(getInventory()
+						.getContents());
+	}
+	
+	/*
+	 * \\Doesn't work
+	 * 
+	 * public void setInventoryName(String name) {
+	 *	 try {
+	 *		 ReflectionUtils.getFinalField(getInventory(), "title").set(getInventory(), name);
+	 *	 } catch (IllegalArgumentException | IllegalAccessException | NoSuchFieldException | SecurityException e) {
+	 *		 e.printStackTrace();
+	 *	 }
+	 * }
+	 * 
+	 */
 	
 	public Inventory getInventory() { return inv; }
 	protected void dealloc() { HandlerList.unregisterAll(this); }
+	public JavaPlugin getPlugin() { return pl; }
   	protected abstract boolean onClick(InventoryClickEvent event, Player p, ItemStack item);
 }

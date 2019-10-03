@@ -13,9 +13,10 @@ import org.bukkit.plugin.java.JavaPlugin;
 
 import com.spigot.libraries.gui.components.ComponentAction;
 import com.spigot.libraries.gui.components.CraftComponent;
+import com.spigot.libraries.utility.Cloneable;
 
-public abstract class CraftIGUI extends IGUI {
-	private Map<Integer, CraftComponent> components = new HashMap<>();;
+public class CraftIGUI extends IGUI {
+	private Map<Integer, CraftComponent> components = new HashMap<>();
 
 	public CraftIGUI(JavaPlugin pl, InventoryHolder owner, int size, String name) {
 		super(pl, owner, size, name);
@@ -23,6 +24,20 @@ public abstract class CraftIGUI extends IGUI {
 	
 	public CraftIGUI(JavaPlugin pl, InventoryHolder owner, InventoryType type, String name) {
 		this(pl, owner, type.getDefaultSize(), name);
+	}
+	
+	public CraftIGUI(IGUI base) {
+		this(base.getPlugin(), 
+				base.getInventory().getHolder(), 
+				base.getInventory().getSize(), 
+				base.getInventory().getName());
+	}
+	
+	public CraftIGUI(CraftIGUI base) {
+		this((IGUI) base);
+		for(Map.Entry<Integer, CraftComponent> entry 
+				: base.getComponents().entrySet()) 
+			setComponent(entry.getKey(), entry.getValue());
 	}
 	
 	public Map<Integer, CraftComponent> addComponent(CraftComponent... cmps) {
@@ -46,6 +61,11 @@ public abstract class CraftIGUI extends IGUI {
 	public Map<Integer, CraftComponent> getComponents() {
 		return components;
 	}
+	 
+	public CraftIGUI setComponents(Map<Integer, CraftComponent> components) {
+		this.components = components;
+		return this;
+	}
 	
 	public CraftComponent getComponent(int i) {
 		CraftComponent component = components.get(i);
@@ -54,14 +74,21 @@ public abstract class CraftIGUI extends IGUI {
 	}
 	
 	@Override
+	public CraftIGUI clone() {
+		CraftIGUI clone = new CraftIGUI(this).setComponents(Cloneable.mapClone(getComponents()));
+		clone.getInventory().setContents(getInventory().getContents().clone());
+		return clone;
+	}
+	
+	@Override
 	public boolean onClick(InventoryClickEvent event, Player p, ItemStack item) {
 		try {
 			CraftComponent cmp = getComponent(event.getSlot());
 			Callable<Boolean> action = cmp.getAction();
-			if(action instanceof ComponentAction) ((ComponentAction<Boolean>) action).setPlugin(pl).setPlayer(p);
+			if(action instanceof ComponentAction) ((ComponentAction) action).setIGUI(this).setPlayer(p);
 			return cmp.execute();
 		} catch (Exception e) {
-			pl.getLogger().severe("Exception during handling inventory GUI click on instance \"" + getInventory().getName() + "\"");
+			getPlugin().getLogger().severe("Exception during handling inventory GUI click on instance \"" + getInventory().getName() + "\"");
 			e.printStackTrace();
 		}
 		return true;

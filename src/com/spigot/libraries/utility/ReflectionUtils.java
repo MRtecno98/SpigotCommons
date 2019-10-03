@@ -32,6 +32,19 @@ public final class ReflectionUtils {
     	return (T) result;
 	}
 	
+	public static Field getFinalField(Object obj, String fieldname) throws IllegalArgumentException, IllegalAccessException, 
+	NoSuchFieldException, SecurityException {
+		Field field = obj.getClass().getDeclaredField(fieldname);
+		
+		field.setAccessible(true);
+		
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+		
+		return field;
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> T getStaticPrivateField(Class<?> clazz, String field) throws NoSuchFieldException, 
 	SecurityException, IllegalArgumentException, IllegalAccessException {
@@ -66,6 +79,20 @@ public final class ReflectionUtils {
 		return result;
 	}
 	
+	@SuppressWarnings("unchecked")
+	public static <T> T constructorClone(T obj, Signature constructor, Object... args) {
+		try {
+			return (T) obj.getClass()
+					.getDeclaredConstructor(constructor.getParameters())
+					.newInstance(args);
+		} catch (InstantiationException | IllegalAccessException 
+				| IllegalArgumentException | InvocationTargetException
+				| NoSuchMethodException | SecurityException e) {
+			e.printStackTrace();
+			return null;
+		}
+	}
+	
 	public static boolean checkMethodSignature(Method a, Method b) {
 		if(!(a.getReturnType() == b.getReturnType() &&
 				a.getParameterCount() == b.getParameterCount())) return false;
@@ -78,6 +105,20 @@ public final class ReflectionUtils {
 		}
 		
 		return true;
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> T reflectionClone(T original) {
+		try {
+			Method m = Object.class.getDeclaredMethod("clone");
+			m.setAccessible(true);
+			return (T) m.invoke(original);
+		} catch (IllegalAccessException | IllegalArgumentException | 
+				InvocationTargetException | NoSuchMethodException | 
+				SecurityException e) {
+			e.printStackTrace();
+			return null;
+		}
 	}
 	
 	public static SimpleCommandMap getCommandMap() throws SecurityException, 
