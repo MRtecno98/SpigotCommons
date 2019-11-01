@@ -9,7 +9,7 @@ public class AbstractionSection extends MemorySection {
 		preCloning(preCloningData);
 		for(String k : sect.getKeys(false)) set(k, sect.get(k));
 	}
-	
+
 	@Override
 	public void set(String key, Object value) {
 		super.set(key, value);

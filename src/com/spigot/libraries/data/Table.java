@@ -4,7 +4,7 @@ import java.sql.Connection;
 
 import com.spigot.libraries.utility.Cloneable;;
 
-public abstract class Table extends Cloneable<Table> {
+public class Table extends Cloneable<Table> {
 	private String name;
 	private Column[] columns;
 	
@@ -25,8 +25,8 @@ public abstract class Table extends Cloneable<Table> {
 		return columns;
 	}
 	
-	public abstract void onInitialization(Connection conn);
-	public abstract void onCreation(Connection conn);
+	public void onInitialization(Connection conn) {};
+	public void onCreation(Connection conn) {};
 	
-	public abstract void onRegistration(DynamicDatabaseService service);
+	public void onRegistration(DynamicDatabaseService service) {};
 }

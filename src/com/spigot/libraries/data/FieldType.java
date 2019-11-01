@@ -1,7 +1,13 @@
 package com.spigot.libraries.data;
 
 public enum FieldType {
-	TEXT("text"), INT("int");
+	TEXT("text"), 
+	INT("int"), 
+	DECIMAL("decimal"), 
+	CHAR("char"), 
+	DATE("date"), 
+	DATETIME("DATETIME"), 
+	TIMESTAMP("timestamp");
 	
 	private String sqlname;
 	
@@ -9,8 +15,12 @@ public enum FieldType {
 		this.sqlname = sqlname;
 	}
 	
+	public String getValue() {
+		return sqlname;
+	}
+	
 	@Override
 	public String toString() {
-		return this.sqlname.toLowerCase();
+		return getValue().toUpperCase();
 	}
 }

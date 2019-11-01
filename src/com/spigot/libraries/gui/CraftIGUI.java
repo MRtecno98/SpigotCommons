@@ -53,9 +53,10 @@ public class CraftIGUI extends IGUI {
 		return refres;
 	}
 	
-	public void setComponent(int slot, CraftComponent component) {
+	public CraftIGUI setComponent(int slot, CraftComponent component) {
 		inv.setItem(slot, component);
 		components.put(slot, component);
+		return this;
 	}
 	
 	public Map<Integer, CraftComponent> getComponents() {

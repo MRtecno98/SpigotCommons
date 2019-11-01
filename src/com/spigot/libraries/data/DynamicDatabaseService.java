@@ -8,7 +8,7 @@ import java.util.Arrays;
 import java.util.List;
 
 public abstract class DynamicDatabaseService implements SQLService {
-	private List<Database> databases;
+	private List<Database> databases = new ArrayList<>();
 	
 	public DynamicDatabaseService register(Database... tables) {
 		List<Database> databases = Arrays.asList(tables);
@@ -28,9 +28,11 @@ public abstract class DynamicDatabaseService implements SQLService {
 			for(Database db : getDatabases()) {
 				if(!databases.contains(db.getName())) {
 					check = true;
-					PreparedStatement st = getConnection().prepareStatement("CREATE DATABASE " + db);
+					PreparedStatement st = getConnection().prepareStatement("CREATE DATABASE " + db.getName());
 					st.executeUpdate();
+					db.onCreation(getConnection());
 				}
+				db.onInitialization(getConnection());
 			}
 			
 			for(Database db : getDatabases()) {
@@ -40,7 +42,8 @@ public abstract class DynamicDatabaseService implements SQLService {
 					if(!tables.contains(table.getName())) {
 						check = false;
 						String sql = "CREATE TABLE " + table.getName() + " (";
-						for(Column col : table.getColumns()) sql += col.getName() + " " + col.getType() + ", ";
+						for(Column col : table.getColumns()) sql += col.toString() + ", ";
+						sql = sql.substring(0, sql.length()-2);
 						sql += ");";
 						
 						PreparedStatement st = getConnection().prepareStatement(sql);

@@ -7,7 +7,7 @@ import java.util.List;
 
 import com.spigot.libraries.utility.Cloneable;
 
-public abstract class Database extends Cloneable<Table> {
+public class Database extends Cloneable<Table> {
 	private String name;
 	private List<Table> tables;
 	
@@ -30,8 +30,8 @@ public abstract class Database extends Cloneable<Table> {
 		return null;
 	}
 	
-	public abstract void onInitialization(Connection conn);
-	public abstract void onCreation(Connection conn);
+	public void onInitialization(Connection conn) {};
+	public void onCreation(Connection conn) {};
 	
-	public abstract void onRegistration(DynamicDatabaseService service);
+	public void onRegistration(DynamicDatabaseService service) {};
 }

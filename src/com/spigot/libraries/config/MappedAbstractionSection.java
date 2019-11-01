@@ -17,9 +17,8 @@ public abstract class MappedAbstractionSection extends AbstractionSection {
 	}
 	
 	@Override
-	public void set(String key, Object value) {
-		super.set(key, value);
-		for(String keyword : keys) if(key.equals(keyword)) onKeywordSet(key, value);
+	public void onSetting(String key, Object value) {
+		if(key != null) for(String keyword : keys) if(key.equals(keyword)) onKeywordSet(key, value);
 	}
 	
 	public abstract void onKeywordSet(String key, Object value);
