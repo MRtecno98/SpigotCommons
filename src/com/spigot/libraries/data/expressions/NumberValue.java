@@ -1,11 +1,11 @@
 package com.spigot.libraries.data.expressions;
 
-public class ValueNumber extends Number implements Value {
+public class NumberValue extends Number implements Value {
 	private static final long serialVersionUID = -8141065409848009971L;
 	
 	private Number value;
 
-	public ValueNumber(Number value) {
+	public NumberValue(Number value) {
 		this.value = value;
 	}
 

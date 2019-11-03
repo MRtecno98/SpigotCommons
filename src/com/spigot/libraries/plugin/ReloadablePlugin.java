@@ -1,6 +1,7 @@
 package com.spigot.libraries.plugin;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.List;
 
 import org.bukkit.event.HandlerList;
@@ -22,6 +23,11 @@ public class ReloadablePlugin extends JavaPlugin {
 	protected Command trackCommand(Command cmd) {
 		commands.add(cmd);
 		return cmd;
+	}
+	
+	protected Collection<? extends Command> trackCommands(Collection<? extends Command> cmds) {
+		cmds.forEach((cmd) -> trackCommand(cmd));
+		return cmds;
 	}
 	
 	protected BukkitTask trackTask(BukkitTask task) {

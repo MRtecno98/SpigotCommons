@@ -1,9 +1,9 @@
 package com.spigot.libraries.data.expressions;
 
-public class ValueBoolean implements Value {
+public class BooleanValue implements Value {
 	private boolean value;
 
-	public ValueBoolean(boolean value) {
+	public BooleanValue(boolean value) {
 		this.value = value;
 	}
 

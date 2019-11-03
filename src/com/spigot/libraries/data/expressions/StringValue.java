@@ -1,9 +1,9 @@
 package com.spigot.libraries.data.expressions;
 
-public class ValueString implements Value {
+public class StringValue implements Value {
 	private String value;
 
-	public ValueString(String value) {
+	public StringValue(String value) {
 		this.value = value;
 	}
 

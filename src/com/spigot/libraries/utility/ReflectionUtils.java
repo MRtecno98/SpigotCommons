@@ -98,8 +98,6 @@ public final class ReflectionUtils {
 				a.getParameterCount() == b.getParameterCount())) return false;
 		int i = 0;
 		for(Parameter par : a.getParameters()) {
-			System.out.println(par);
-			System.out.println(b.getParameters()[i]);
 			if(!b.getParameters()[i].getType().equals(par.getType())) return false;
 			i++;
 		}
@@ -153,7 +151,7 @@ public final class ReflectionUtils {
 	}
 	
 	public static PluginCommand constructPluginCommand(String label, Plugin owner) {
-		System.out.println("Constructing new plugin command [LABEL: " + label + " , OWNER: " + owner.toString() + "]");
+		owner.getLogger().info("Constructing new plugin command [LABEL: " + label + " , OWNER: " + owner.toString() + "]");
 		try {
 			return instancePrivateConstructor(PluginCommand.class, 
 					new Class<?>[] { String.class, Plugin.class }, 

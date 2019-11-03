@@ -9,6 +9,7 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandSender;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -43,8 +44,8 @@ public class CommandsProcessor {
 		
 		for(Class<?> clazz : classes) {
 			ClassProcessResult result = processClass(clazz);
-			commands.add(result.getRootCommand());
-			commands.addAll(result.getRegisterSubcommands());
+			if(result.hasRootCommand()) commands.add(result.getRootCommand());
+			if(result.hasSubcommands()) commands.addAll(result.getRegisterSubcommands());
 		}
 		
 		this.processed_commands = commands;
@@ -87,7 +88,6 @@ public class CommandsProcessor {
 			}
 			
 			for(Class<?> subclass : clazz.getClasses()) {
-				System.out.println("Subclass: " + subclass);
 				if(subclass.isAnnotationPresent(Command.class)) {
 					ClassProcessResult subresult = processClass(subclass);
 					if(subclass.isAnnotationPresent(SubRegister.class)) registerSubCommands.add(subresult.getRootCommand()
@@ -107,9 +107,6 @@ public class CommandsProcessor {
 	}
 	
 	public com.spigot.libraries.commands.Command processAnnotations(AnnotatedElement element, final Object obj, final Method action) {
-		System.out.println(action);
-		System.out.println(commandExecuteMethod);
-		System.out.println(ReflectionUtils.checkMethodSignature(action, action));
 		if(!ReflectionUtils.checkMethodSignature(action, commandExecuteMethod)) throw new NotCompatibleMethodException("Method not compatible");
 		
 		String label = element.getAnnotation(Command.class).value();
@@ -145,15 +142,26 @@ public class CommandsProcessor {
 		public ClassProcessResult(com.spigot.libraries.commands.Command rootCommand,
 				Collection<com.spigot.libraries.commands.Command> registerSubcommands) {
 			this.rootCommand = rootCommand;
-			this.registerSubcommands = registerSubcommands;
+			this.registerSubcommands = registerSubcommands == null ? registerSubcommands : 
+				registerSubcommands.stream()
+							.filter((cmd) -> cmd != null)
+							.collect(Collectors.toList());
 		}
 
 		public com.spigot.libraries.commands.Command getRootCommand() {
 			return rootCommand;
 		}
+		
+		public boolean hasRootCommand() {
+			return getRootCommand() != null;
+		}
 
 		public Collection<com.spigot.libraries.commands.Command> getRegisterSubcommands() {
 			return registerSubcommands;
+		}
+		
+		public boolean hasSubcommands() {
+			return registerSubcommands != null && registerSubcommands.size() > 0;
 		}
 	}
 }
