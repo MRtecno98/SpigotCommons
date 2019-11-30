@@ -24,6 +24,6 @@ public class ArgumentedConstraint implements Constraint {
 	
 	@Override
 	public String toString() {
-		return type.toString() + (argument != null ? " (" + argument.toString() + ")" : "");
+		return type.toString() + (argument != null ? " " + argument.toString() : "");
 	}
 }

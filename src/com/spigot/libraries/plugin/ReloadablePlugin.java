@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import org.bukkit.Bukkit;
 import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.plugin.java.JavaPlugin;
@@ -58,9 +59,15 @@ public class ReloadablePlugin extends JavaPlugin {
 		localizers.clear();
 		firstload = false;
 		onEnable();
+		
+		PluginReloadEvent event = new PluginReloadEvent(this);
+		Bukkit.getPluginManager().callEvent(event);
+		
+		onReload();
 	}
 	
 	protected void onUnload() {}
+	protected void onReload() {}
 	
 	protected void unloadListeners() {
 		for(Listener ls : listeners) HandlerList.unregisterAll(ls);

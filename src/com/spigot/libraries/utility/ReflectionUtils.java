@@ -17,6 +17,11 @@ import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
 public final class ReflectionUtils {
+	public static String getClassSimpleName(Class<?> clazz) {
+		String simpleName = clazz.getSimpleName();
+		return simpleName == "" ? simpleName : clazz.getSuperclass().getSimpleName();
+	}
+	
 	@SuppressWarnings("unchecked")
 	public static <T> T getPrivateField(Object object, String field) throws SecurityException,
 	 NoSuchFieldException, IllegalArgumentException, IllegalAccessException {

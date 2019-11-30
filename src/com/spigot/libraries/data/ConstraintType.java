@@ -14,6 +14,10 @@ public enum ConstraintType implements Constraint {
 		this.value = value;
 	}
 	
+	public Constraint argument(ConstraintArgument argument) {
+		return new ArgumentedConstraint(this, argument);
+	}
+	
 	@Override
 	public String toString() {
 		return value;
