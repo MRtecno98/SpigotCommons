@@ -39,6 +39,14 @@
     	<scope>provided</scope>
   	</dependency>
   </dependencies>
+	
+  <distributionManagement>
+   <repository>
+     <id>github</id>
+     <name>GitHub MRtecno98 Apache Maven Packages</name>
+     <url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
+   </repository>
+  </distributionManagement>
   
   <build>
     <sourceDirectory>src</sourceDirectory>
