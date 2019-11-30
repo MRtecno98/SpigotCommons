@@ -15,7 +15,7 @@ jobs:
         java-version: 1.8
     - name: Set up maven settings
       run: >-
-        mkdir ./~/.m2
+        mkdir ~/.m2
         
         echo "
         <settings>
