@@ -28,5 +28,5 @@ jobs:
         
     - name: Build with Maven
       run: mvn -B clean package --file pom.xml
-    - name: Deploy to GH packages
-      run: mvn deploy -Dregistry=https://maven.pkg.github.com/MRtecno98 -Dtoken=${{ secrets.GITHUB_TOKEN }}
+    #- name: Deploy to GH packages
+    #  run: mvn deploy -Dregistry=https://maven.pkg.github.com/MRtecno98 -Dtoken=${{ secrets.GITHUB_TOKEN }}
