@@ -29,7 +29,7 @@ public abstract class IGUI extends Cloneable<IGUI> implements Listener {
 	public static List<IGUI> getRegisteredGUIs() { return registeredGUIs; }
 	
 	public IGUI(JavaPlugin pl, InventoryHolder owner, int size, String name) {
-		inv = Bukkit.createInventory(owner, size, name);
+		inv = Bukkit.createInventory(TrackingHolder.track(owner), size, name);
 		Bukkit.getServer().getPluginManager().registerEvents(this, pl);
 		this.pl = pl;
 		IGUI.registeredGUIs.add(this);
@@ -43,13 +43,24 @@ public abstract class IGUI extends Cloneable<IGUI> implements Listener {
 	public void onInventoryClick(InventoryClickEvent event) {
 		if(event.getViewers().size() == 0) return;
 		if(event.getCurrentItem() == null || event.getCurrentItem().getType().equals(Material.AIR)) { return; }
-		if(event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null))
+		if(event.getInventory().getViewers().size() > 0 && event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null))
 			event.setCancelled(onClick(event, (Player) event.getWhoClicked(), event.getCurrentItem()));
 	}
 	
 	@EventHandler
 	public void onInventoryClose(InventoryCloseEvent event) {
-		if(event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null)) dealloc();
+		if(!event.getInventory().getType().equals(InventoryType.CHEST)) return;
+		if(inv.getViewers().size() == 0) dealloc();
+		if(event.getInventory().getViewers().get(0).getName().equals(inv.getViewers().size() > 0 ? inv.getViewers().get(0).getName() : null) || event.getInventory().hashCode() == inv.hashCode()) dealloc();
+	}
+	
+	public void open(Player p) {
+		p.openInventory(getInventory());
+	}
+	
+	public void open() {
+		InventoryHolder holder = ((TrackingHolder) getInventory().getHolder()).getWrapped();
+		if(holder != null && holder instanceof Player) open((Player) holder);
 	}
 	
 	@Override

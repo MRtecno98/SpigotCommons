@@ -1,8 +1,11 @@
 package com.spigot.libraries.gui.components;
 
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import org.bukkit.Material;
 import org.bukkit.inventory.ItemFlag;
@@ -43,14 +46,32 @@ public class CraftComponent extends ComparableStack {
 		return this;
 	}
 	
-	public CraftComponent addLore(String... lines) { 
+	public CraftComponent addLore(Collection<String> lines) {
+		List<String> newlore = getLore();
+			newlore.addAll(lines);
+		setLore(newlore);
+		return this;
+	}
+	
+	public CraftComponent setLore(Collection<String> lines) {
 		ItemMeta meta = getItemMeta();
-			List<String> lore = meta.getLore();
-			lore = lore == null ? new ArrayList<>() : lore;
-				for(String line : lines) lore.add(line);
-			meta.setLore(lore);
+			meta.setLore(lines.stream().collect(Collectors.toList()));
 		setItemMeta(meta);
+		return this;
+	}
+	
+	public List<String> getLore() {
+		return getItemMeta().getLore() != null ? getItemMeta().getLore() : new ArrayList<>();
+	}
+	
+	public CraftComponent addLore(String... lines) { 
+		addLore(Arrays.asList(lines));
 		return this; 
+	}
+	
+	public CraftComponent removeLore() {
+		setLore(new ArrayList<>());
+		return this;
 	}
 	
 	public CraftComponent setMaterial(Material mt) { 

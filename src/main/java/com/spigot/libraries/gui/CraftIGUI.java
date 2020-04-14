@@ -3,6 +3,7 @@ package com.spigot.libraries.gui;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.concurrent.Callable;
+import java.util.stream.Collectors;
 
 import org.bukkit.entity.Player;
 import org.bukkit.event.inventory.InventoryClickEvent;
@@ -59,8 +60,21 @@ public class CraftIGUI extends IGUI {
 		return this;
 	}
 	
+	public CraftIGUI setComponent(InventoryLocation loc, CraftComponent component) {
+		return setComponent(loc.getInventorySlot(), component);
+	}
+	
 	public Map<Integer, CraftComponent> getComponents() {
 		return components;
+	}
+	
+	public Map<InventoryLocation, CraftComponent> getLocatedComponents() {
+		return components.entrySet()
+				.stream()
+				.collect(Collectors.toMap(
+						(entry) -> InventoryLocation
+							.fromInventorySlot(entry.getKey()),
+						Map.Entry::getValue));
 	}
 	 
 	public CraftIGUI setComponents(Map<Integer, CraftComponent> components) {
@@ -68,10 +82,14 @@ public class CraftIGUI extends IGUI {
 		return this;
 	}
 	
-	public CraftComponent getComponent(int i) {
-		CraftComponent component = components.get(i);
-		if(component != null && component.equals(inv.getItem(i))) return component;
+	public CraftComponent getComponent(int slot) {
+		CraftComponent component = components.get(slot);
+		if(component != null && component.equals(inv.getItem(slot))) return component;
 		else throw new RuntimeException("Discrepancy between internal and external registry, did you use direct inventory set?");
+	}
+	
+	public CraftComponent getComponent(InventoryLocation loc) {
+		return getComponent(loc.getInventorySlot());
 	}
 	
 	@Override

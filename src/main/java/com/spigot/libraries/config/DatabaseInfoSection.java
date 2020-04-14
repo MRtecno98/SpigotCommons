@@ -5,16 +5,39 @@ import java.util.Map;
 
 import org.bukkit.configuration.ConfigurationSection;
 
+/**
+ * Processes a configuration section containing database info, outputs a {@link StructureInfo}.
+ * 
+ * @author MRtecno98
+ * @category Configurations
+ * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
+ */
 public class DatabaseInfoSection extends MappedAbstractionSection {
+	/** Default database key */
 	public static final String DATABASE_KEY = "database";
+	
+	/** DBMS server username key */
 	public static final String USERNAME_KEY = "user";
+	
+	/** DBMS server password key */
 	public static final String PASSWORD_KEY = "pass";
+	
+	/** Necessary tables list key */
 	public static final String TABLES_KEY = "tables";
+	
+	/** DBMS server address */
 	public static final String HOST_KEY = "host";
+	
+	/** DBMS server port */
 	public static final String PORT_KEY = "port";
 	
 	private ConnectionInfoBuilder conninfo;
-
+	
+	/**
+	 * Constructs a new database info section and processes data.
+	 * 
+	 * @param sect The configuration section containing the data.
+	 */
 	public DatabaseInfoSection(ConfigurationSection sect) {
 		super(sect);
 	}
@@ -82,14 +105,27 @@ public class DatabaseInfoSection extends MappedAbstractionSection {
 		
 	}
 	
+	/**
+	 * @return The {@link ConnectionInfoBuilder builder} object used to build the {@code ConnectionInfo}
+	 */
 	protected ConnectionInfoBuilder getBuilder() {
 		return conninfo;
 	}
 	
+	/**
+	 * @return The processed {@link StructureInfo} containing this section's data.
+	 */
 	public StructureInfo getConnectionInfo() {
 		return getBuilder().build();
 	}
 	
+	/**
+	 * Immutable class containing the database structure info got by processing a configuration section.
+	 * 
+	 * @author MRtecno98
+	 * @category Configurations
+	 * @see ConnectionInfoBuilder
+	 */
 	public class StructureInfo {
 		private String host, username, password, database;
 		private int port;
@@ -130,6 +166,12 @@ public class DatabaseInfoSection extends MappedAbstractionSection {
 		}
 	}
 	
+	/**
+	 * Builder class for the immutable {@link StructureInfo}
+	 * 
+	 * @author MRtecno98
+	 * @category Configurations
+	 */
 	class ConnectionInfoBuilder {
 		private String host, username, password, database;
 		private int port;
@@ -165,9 +207,13 @@ public class DatabaseInfoSection extends MappedAbstractionSection {
 			return this;
 		}
 		
+		/**
+		 * Builds the {@link StructureInfo} object using default constuctor.
+		 * 
+		 * @return The {@code StructureInfo} object built.
+		 */
 		public StructureInfo build() {
 			return new StructureInfo(host, username, password, database, port, tables);
 		}
 	}
-
 }

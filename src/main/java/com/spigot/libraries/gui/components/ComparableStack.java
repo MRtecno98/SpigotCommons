@@ -13,7 +13,7 @@ public class ComparableStack extends ItemStack {
 		ItemStack othercmp = (ItemStack) other;
 		
 		return getType().equals(othercmp.getType()) && 
-				getItemMeta().serialize().equals(othercmp.getItemMeta().serialize()) && 
+				getItemMeta().equals(othercmp.getItemMeta()) && 
 				getAmount() == othercmp.getAmount() && 
 				getDurability() == othercmp.getDurability();
 	}

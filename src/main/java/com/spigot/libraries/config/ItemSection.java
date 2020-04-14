@@ -4,14 +4,33 @@ import org.bukkit.Material;
 import org.bukkit.configuration.ConfigurationSection;
 import org.bukkit.inventory.ItemStack;
 
+/**
+ * Represents and processes a section containing information about an item.
+ * 
+ * @author MRtecno98
+ * @category Configurations
+ * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
+ */
 public class ItemSection extends MappedAbstractionSection {
+	/** Configuration key for the string name of the item {@link Material}, must be a valid Material. */
 	public static final String MATERIAL_KEY = "type";
+	
+	/** Configuration key for the amount of items to include in the resulting ItemStack. */
 	public static final String AMOUNT_KEY = "amount";
+	
+	/** Configuration key for the damage value of the Item. */
 	public static final String DAMAGE_KEY = "damage";
+	
+	/** Configuration key for the {@link ItemMetaSection} representing the {@link ItemMeta} of this Item, must be a valid ItemMetaSection. */
 	public static final String META_KEY = "metadata";
 	
 	private ItemStack it;
 	
+	/**
+	 * Constructs and clones the configuration section, then builds the {@link ItemStack}.
+	 * 
+	 * @param sect The configuration section containing the data.
+	 */
 	public ItemSection(ConfigurationSection sect) {
 		super(sect);
 	}
@@ -55,10 +74,16 @@ public class ItemSection extends MappedAbstractionSection {
 		}
 	}
 	
+	/**
+	 * @return A reference to the built {@link ItemStack} may be used by subclasses.
+	 */
 	protected ItemStack getItemReference() {
 		return it;
 	}
 	
+	/**
+	 * @return A copy of the built {@link ItemStack}.
+	 */
 	public ItemStack getItem() {
 		return new ItemStack(getItemReference());
 	}

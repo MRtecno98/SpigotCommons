@@ -8,9 +8,21 @@ import org.bukkit.enchantments.Enchantment;
 
 import com.spigot.libraries.enchs.EnchantmentNameMapper;
 
+/**
+ * Processes a configuration section containing a {@code name-level} mapping of various enchantments.
+ * 
+ * @author MRtecno98
+ * @category Configurations
+ * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
+ */
 public class EnchantmentSection extends AbstractionSection {
 	private Map<Enchantment, Integer> enchs;
-
+	
+	/**
+	 * Constructs and processes a new EnchantmentSection, this starts the cloning process.
+	 * 
+	 * @param sect The configuration section containing the enchantments data.
+	 */
 	public EnchantmentSection(ConfigurationSection sect) {
 		super(sect);
 	}
@@ -32,10 +44,16 @@ public class EnchantmentSection extends AbstractionSection {
 		this.enchs = new HashMap<>();
 	}
 	
+	/**
+	 * @return A copy of the processed enchantments map.
+	 */
 	public Map<Enchantment, Integer> getEnchantments() {
 		return new HashMap<>(enchs);
 	}
 	
+	/**
+	 * @return A reference to the processed enchantments map, may be used by subclasses.
+	 */
 	protected Map<Enchantment, Integer> getEnchantmentsReference() {
 		return enchs;
 	}

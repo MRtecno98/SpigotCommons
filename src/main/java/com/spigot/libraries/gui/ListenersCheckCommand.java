@@ -31,7 +31,13 @@ public class ListenersCheckCommand extends Command {
 			}
 		}
 		if(listeners.size() < 1) p.sendMessage(ChatColor.GREEN + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "SUCCESS:" + ChatColor.RESET + ChatColor.GREEN + " GUI Listeners are OK!");
-		else p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "DANGER:" + ChatColor.RESET + ChatColor.DARK_RED + " There is a problem with listeners dealloc!");
+		else {
+			p.sendMessage(ChatColor.RED + "" + ChatColor.BOLD + ChatColor.UNDERLINE + "DANGER:" + ChatColor.RESET + ChatColor.DARK_RED + " There is a problem with listeners dealloc!");
+			p.sendMessage(ChatColor.RED + "Unallocated listeners: ");
+			listeners.forEach((s) -> p.sendMessage(ChatColor.RED + s));
+		}
+		
+		
 		return true;
 	}
 	

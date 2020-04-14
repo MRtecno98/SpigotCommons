@@ -1,104 +1,124 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-  <modelVersion>4.0.0</modelVersion>
-  <groupId>com.spigot.libraries</groupId>
-  <artifactId>spigot-commons</artifactId>
-  <version>1.7.0</version>
-  <name>SpigotCommons</name>
-  <description>Support library to spigot plugin development</description>
-  
-  <repositories>
-	<repository>
-		<id>inventive-repo</id>
-		<url>https://repo.inventivetalent.org/content/groups/public/</url>
-	</repository>
-	
-	<repository>
-    	<id>spigot-repo</id>
-       	<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
-    </repository>
-    
-    <repository>
-    	<id>bungeecord-repo</id>
-       	<url>https://oss.sonatype.org/content/repositories/snapshots</url>
-    </repository>
-  </repositories>
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+	<modelVersion>4.0.0</modelVersion>
+	<groupId>com.spigot.libraries</groupId>
+	<artifactId>spigot-commons</artifactId>
+	<version>1.7.0</version>
+	<name>SpigotCommons</name>
+	<description>Support library to spigot plugin development</description>
 
-  <dependencies>
-  	<!--Reflection API-->
-	<dependency>
-		<groupId>org.inventivetalent</groupId>
-		<artifactId>reflectionhelper</artifactId>
-		<version>1.14.4-SNAPSHOT</version>
-	</dependency>
-	
-	<!--Spigot API-->
-   	<dependency>
-        <groupId>org.spigotmc</groupId>
-        <artifactId>spigot-api</artifactId>
-        <version>1.8-R0.1-SNAPSHOT</version>
-    	<scope>provided</scope>
-  	</dependency>
-  </dependencies>
-	
-  <distributionManagement>
-   <repository>
-     <id>github</id>
-     <name>GitHub MRtecno98 Apache Maven Packages</name>
-     <url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
-   </repository>
-  </distributionManagement>
-  
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-compiler-plugin</artifactId>
-        <version>3.8.0</version>
-        <configuration>
-          <source>1.8</source>
-          <target>1.8</target>
-        </configuration>
-      </plugin>
-      
-      <plugin>
-	  	<groupId>org.apache.maven.plugins</groupId>
-	    <artifactId>maven-jar-plugin</artifactId>
-	    <version>3.0.0</version>
-	    <configuration>
-	    	<archive>
-	        	<manifestEntries>
-	            	<Built-By>MRtecno98</Built-By>
-	           	</manifestEntries>
-	        </archive>
-	    </configuration>
-      </plugin>
-      
-      <plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-shade-plugin</artifactId>
-        <version>3.2.1</version>
-        <executions>
-          <execution>
-            <phase>package</phase>
-            <goals>
-              <goal>shade</goal>
-            </goals>
-            <configuration>
-            	<artifactSet>
-                	<includes>
-                		<include>org.inventivetalent:reflectionhelper</include>
-                	</includes>
-        		</artifactSet>
-            	
-	            <relocations>
-	              <relocation>
-	                <pattern>org.inventivetalent</pattern>
-	                <shadedPattern>com.spigot.libraries</shadedPattern>
-	              </relocation>
-	            </relocations>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
+	<repositories>
+		<repository>
+			<id>inventive-repo</id>
+			<url>https://repo.inventivetalent.org/content/groups/public/</url>
+		</repository>
+
+		<repository>
+			<id>spigot-repo</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/snapshots/</url>
+		</repository>
+
+		<repository>
+			<id>bungeecord-repo</id>
+			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+
+		<repository>
+			<id>jcenter-repo</id>
+			<url>https://jcenter.bintray.com</url>
+		</repository>
+	</repositories>
+
+	<dependencies>
+		<!--Reflection API -->
+		<dependency>
+			<groupId>org.inventivetalent</groupId>
+			<artifactId>reflectionhelper</artifactId>
+			<version>1.14.4-SNAPSHOT</version>
+		</dependency>
+
+		<!--Spigot API -->
+		<dependency>
+			<groupId>org.spigotmc</groupId>
+			<artifactId>spigot-api</artifactId>
+			<version>1.8-R0.1-SNAPSHOT</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>org.projectlombok</groupId>
+			<artifactId>lombok</artifactId>
+			<version>1.18.10</version>
+			<scope>provided</scope>
+		</dependency>
+
+		<dependency>
+			<groupId>com.diffplug.durian</groupId>
+			<artifactId>durian</artifactId>
+			<version>3.4.0</version>
+		</dependency>
+	</dependencies>
+
+	<distributionManagement>
+		<repository>
+			<id>github</id>
+			<name>GitHub MRtecno98 Apache Maven Packages</name>
+			<url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
+		</repository>
+	</distributionManagement>
+
+	<build>
+		<plugins>
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.8.0</version>
+				<configuration>
+					<source>1.8</source>
+					<target>1.8</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-jar-plugin</artifactId>
+				<version>3.0.0</version>
+				<configuration>
+					<archive>
+						<manifestEntries>
+							<Built-By>MRtecno98</Built-By>
+						</manifestEntries>
+					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-shade-plugin</artifactId>
+				<version>3.2.1</version>
+				<executions>
+					<execution>
+						<phase>package</phase>
+						<goals>
+							<goal>shade</goal>
+						</goals>
+						<configuration>
+							<artifactSet>
+								<includes>
+									<include>org.inventivetalent:reflectionhelper</include>
+								</includes>
+							</artifactSet>
+
+							<relocations>
+								<relocation>
+									<pattern>org.inventivetalent</pattern>
+									<shadedPattern>com.spigot.libraries</shadedPattern>
+								</relocation>
+							</relocations>
+						</configuration>
+					</execution>
+				</executions>
+			</plugin>
+		</plugins>
+	</build>
 </project>

@@ -18,12 +18,32 @@ import com.spigot.libraries.commands.CommandFlag;
 import com.spigot.libraries.exceptions.NotCompatibleMethodException;
 import com.spigot.libraries.utility.ReflectionUtils;
 
+/**
+ * Processes and registers commands declared using annotation framework.<br><br>
+ * 
+ * Example usage:<br>
+ * <pre>
+ * {@code
+ * 		new CommandsProcessor()
+ * 	.addClass(Example.class)
+ * 	.process()
+ * 	.register();
+ * }
+ * </pre>
+ * 
+ * @author MRtecno98
+ * @since 1.4
+ * @category CommandsAnnotations
+ */
 public class CommandsProcessor {
 	private List<Class<?>> classes;
 	private Method commandExecuteMethod;
 	
 	private Set<com.spigot.libraries.commands.Command> processed_commands;
 	
+	/**
+	 * Constructs a new processor.
+	 */
 	public CommandsProcessor() {
 		try {
 			this.classes = new ArrayList<>();
@@ -34,11 +54,22 @@ public class CommandsProcessor {
 		}
 	}
 	
+	/**
+	 * Adds classes to be scanned for parsable commands.
+	 * 
+	 * @param classes Array of classes to be scanned.
+	 * @return This processor.
+	 */
 	public CommandsProcessor addClass(Class<?>... classes) {
 		this.classes.addAll(Arrays.asList(classes));
 		return this;
 	}
 	
+	/**
+	 * Processes all commands in registered classes and stores them inside this processor.
+	 * 
+	 * @return This processor.
+	 */
 	public CommandsProcessor process() {
 		Set<com.spigot.libraries.commands.Command> commands = new HashSet<>();
 		
@@ -52,15 +83,35 @@ public class CommandsProcessor {
 		return this;
 	}
 	
+	/**
+	 * Registers all commands contained in this processor using the given {@link JavaPlugin} instance.
+	 * 
+	 * @param pl {@code Plugin} instance used to register the commands.
+	 * @return This processor.
+	 * @see com.spigot.libraries.commands.Command#register(JavaPlugin)
+	 */
 	public CommandsProcessor register(JavaPlugin pl) {
 		for(com.spigot.libraries.commands.Command cmd : results()) cmd.register(pl);
 		return this;
 	}
 	
+	/**
+	 * Gets all the commands stored in this processor.
+	 * 
+	 * @return A collection containing the stored commands.
+	 */
 	public Collection<com.spigot.libraries.commands.Command> results() {
 		return processed_commands;
 	}
 	
+	/**
+	 * Processes a single class for commands, does not return a directly usable result,
+	 *  it's mainly used by the {@link #process} method or subclasses.
+	 * 
+	 * @param clazz The class to process
+	 * @return A {@link ClassProcessResult} instance containing raw processing results.
+	 * @see ClassProcessResult
+	 */
 	public ClassProcessResult processClass(Class<?> clazz) {
 		Set<com.spigot.libraries.commands.Command> registerSubCommands = new HashSet<>();
 		com.spigot.libraries.commands.Command main = null;
@@ -106,6 +157,15 @@ public class CommandsProcessor {
 		return new ClassProcessResult(main, registerSubCommands);
 	}
 	
+	/**
+	 * Processes a single element of a class representing a single command, the arguments of this method aren't mean for a direct usage,
+	 *  this method it's mainly used by the {@link #processClass} method or subclasses.
+	 * 
+	 * @param element The element to process.
+	 * @param obj The object instance the element is linked to.
+	 * @param action The target {@link Method} containing the action of this command.
+	 * @return The command processed
+	 */
 	public com.spigot.libraries.commands.Command processAnnotations(AnnotatedElement element, final Object obj, final Method action) {
 		if(!ReflectionUtils.checkMethodSignature(action, commandExecuteMethod)) throw new NotCompatibleMethodException("Method not compatible");
 		
@@ -135,6 +195,12 @@ public class CommandsProcessor {
 		}.aliases(aliases);
 	}
 	
+	/**
+	 * Stores the result of a class processed by {@link com.spigot.libraries.commands.annotations.CommandsProcessor#processClass(Class)}
+	 * @author MRtecno98
+	 * @since 1.4
+	 * @category CommandsAnnotations
+	 */
 	class ClassProcessResult {
 		private com.spigot.libraries.commands.Command rootCommand;
 		private Collection<com.spigot.libraries.commands.Command> registerSubcommands;
