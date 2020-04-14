@@ -37,9 +37,45 @@ public final class ReflectionUtils {
     	return (T) result;
 	}
 	
+	public static void setPrivateField(Object object, String field, Object value) throws SecurityException,
+	 NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+		Class<?> clazz = object.getClass();
+    	Field objectField = clazz.getDeclaredField(field);
+    	
+    	boolean wasAccessible = objectField.isAccessible();
+    	
+   		objectField.setAccessible(true);
+    	objectField.set(object, value);
+    	objectField.setAccessible(wasAccessible);
+	}
+	
+	public static void setPrivateField(Class<?> clazz, String field, Object value) throws SecurityException,
+	 NoSuchFieldException, IllegalArgumentException, IllegalAccessException {
+    	Field objectField = clazz.getDeclaredField(field);
+    	
+    	boolean wasAccessible = objectField.isAccessible();
+    	
+   		objectField.setAccessible(true);
+    	objectField.set(null, value);
+    	objectField.setAccessible(wasAccessible);
+	}
+	
 	public static Field getFinalField(Object obj, String fieldname) throws IllegalArgumentException, IllegalAccessException, 
 	NoSuchFieldException, SecurityException {
 		Field field = obj.getClass().getDeclaredField(fieldname);
+		
+		field.setAccessible(true);
+		
+		Field modifiersField = Field.class.getDeclaredField("modifiers");
+		modifiersField.setAccessible(true);
+		modifiersField.setInt(field, field.getModifiers() & ~java.lang.reflect.Modifier.FINAL);
+		
+		return field;
+	}
+	
+	public static Field getFinalField(Class<?> clazz, String fieldname) throws IllegalArgumentException, IllegalAccessException, 
+	NoSuchFieldException, SecurityException {
+		Field field = clazz.getDeclaredField(fieldname);
 		
 		field.setAccessible(true);
 		
