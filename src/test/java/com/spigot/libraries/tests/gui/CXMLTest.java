@@ -11,7 +11,7 @@ import com.spigot.libraries.cxml.parsing.CXMLParser;
 public class CXMLTest {
 	
 	@Test
-	@Ignore("CXML Parser not finisihed yet")
+	@Ignore("CXML Parser not finished yet")
 	public void parseTest() throws SAXException, IOException {
 		CXMLParser parser = new CXMLParser();
 		parser.loadData(getClass()
