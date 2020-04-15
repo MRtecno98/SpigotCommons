@@ -4,10 +4,14 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.spigot.libraries</groupId>
 	<artifactId>spigot-commons</artifactId>
-	<version>1.7.0</version>
+	<version>1.7.1-ea0f438</version>
 	<name>SpigotCommons</name>
 	<description>Support library to spigot plugin development</description>
-
+	
+	<properties>
+		<baseversion>1.7.2</baseversion>
+	</properties>
+	
 	<repositories>
 		<repository>
 			<id>inventive-repo</id>
@@ -59,16 +63,18 @@
 			<version>3.4.0</version>
 		</dependency>
 	</dependencies>
-
+	
 	<distributionManagement>
-		<repository>
-			<id>github</id>
-			<name>GitHub MRtecno98 Apache Maven Packages</name>
-			<url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
-		</repository>
+	   <repository>
+	     <id>github</id>
+	     <name>GitHub MRtecno98 Apache Maven Packages</name>
+	     <url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
+	   </repository>
 	</distributionManagement>
 
 	<build>
+		<finalName>${project.artifactId}-${project.version}</finalName>
+	
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -87,6 +93,7 @@
 					<archive>
 						<manifestEntries>
 							<Built-By>MRtecno98</Built-By>
+							<SCM-Revision>${git.commit.id.abbrev}</SCM-Revision>
 						</manifestEntries>
 					</archive>
 				</configuration>
@@ -119,6 +126,70 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+			<plugin>
+			    <groupId>pl.project13.maven</groupId>
+			    <artifactId>git-commit-id-plugin</artifactId>
+			    <version>2.2.4</version>
+			    <executions>
+			        <execution>
+			            <phase>validate</phase>
+			            <goals>
+			                <goal>revision</goal>
+			            </goals>
+			        </execution>
+			    </executions>
+			    <configuration>
+			        <dateFormat>yyyyMMdd-HHmmss</dateFormat>
+			        <dotGitDirectory>${project.basedir}/.git</dotGitDirectory>
+			        <generateGitPropertiesFile>false</generateGitPropertiesFile>
+			    </configuration>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+		        <artifactId>versions-maven-plugin</artifactId>
+		        <version>2.7</version>
+		        <executions>
+		        	<execution>
+		        		<id>add-commit-revision</id>
+		        		<phase>validate</phase>
+			        	<goals>
+			        		<goal>set</goal>
+			        	</goals>
+			        	
+			        	<configuration>
+		        			<newVersion>${baseversion}-${git.commit.id.abbrev}</newVersion>
+		        		</configuration>
+		        	</execution>
+		        </executions>
+			</plugin>
 		</plugins>
 	</build>
+	
+	<profiles>
+		<profile>
+	    	<id>major-version</id>
+	    	<activation>
+	    		<activeByDefault>false</activeByDefault>
+	    	</activation>
+	    	<build>
+	    		<plugins>
+		    		<plugin>
+						<groupId>org.codehaus.mojo</groupId>
+					    <artifactId>versions-maven-plugin</artifactId>
+					    <version>2.7</version>
+					    <executions>
+					    	<execution>
+					        	<id>add-commit-revision</id>
+					        	<configuration>
+				        			<newVersion>${baseversion}</newVersion>
+				        		</configuration>
+					        </execution>
+					    </executions>
+					</plugin>
+		    	</plugins>
+	    	</build>
+	    </profile>
+	</profiles>
 </project>

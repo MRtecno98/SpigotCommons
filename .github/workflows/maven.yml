@@ -1,10 +1,9 @@
-name: SpigotCommons
+name: Maven Build
 
 on: [push]
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     steps:
@@ -13,20 +12,22 @@ jobs:
       uses: actions/setup-java@v1
       with:
         java-version: 1.8
-    - name: Set up maven settings
-      run: >-
-        mkdir -p ~/.m2
-        
-        echo "
-        <settings>
-          <server>
-            <id>github</id>
-            <username>MRtecno98</username>
-            <password>${{ secrets.GITHUB_TOKEN }}</password>
-          </server>
-        </settings>" > ~/.m2/settings.xml
         
     - name: Build with Maven
-      run: mvn -B clean package --file pom.xml
-    #- name: Deploy to GH packages
-    #  run: mvn deploy -Dregistry=https://maven.pkg.github.com/MRtecno98 -Dtoken=${{ secrets.GITHUB_TOKEN }}
+      run: mvn -B clean package -DskipTests --file pom.xml
+      
+    - name: Run unit tests
+      run: mvn -B test --file pom.xml
+      
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v1
+    - name: Set up JDK 1.8
+      uses: actions/setup-java@v1
+      with:
+        java-version: 1.8
+        
+    - name: Deploy to GitHub packages
+      run: mvn -B deploy --file pom.xml -Dgithub.token=${{ secrets.GITHUB_TOKEN }}
