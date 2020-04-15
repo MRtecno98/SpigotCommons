@@ -26,12 +26,12 @@
       </repositories>
     </profile>
   </profiles>
-
+  
   <servers>
-    <server>
-      <id>github</id>
-      <username>MRtecno98</username>
-      <password>${github.token}</password>
-    </server>
+  	<server>
+		<id>github</id>
+	    <username>MRtecno98</username>
+	    <password>${env.github.token}</password>
+	</server>
   </servers>
 </settings>
