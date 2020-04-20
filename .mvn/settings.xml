@@ -31,7 +31,7 @@
   	<server>
 		<id>github</id>
 	    <username>MRtecno98</username>
-	    <password>${env.github-token}</password>
+	    <password>${env.GITHUB_TOKEN}</password>
 	</server>
   </servers>
 </settings>
