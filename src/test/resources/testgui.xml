@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE xml>
 
-<?import com.spigot.libraries.tests.gui.TestingGuiController?>
+<?import com.spigot.libraries.tests.cxml.TestingGuiController?>
 
 <inventory rows="3" title="Testing GUI"
 	controller="TestingGuiController">

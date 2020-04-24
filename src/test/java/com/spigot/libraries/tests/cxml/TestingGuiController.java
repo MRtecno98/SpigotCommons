@@ -1,4 +1,4 @@
-package com.spigot.libraries.tests.gui;
+package com.spigot.libraries.tests.cxml;
 
 public class TestingGuiController {
 

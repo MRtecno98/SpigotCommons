@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.spigot.libraries</groupId>
 	<artifactId>spigot-commons</artifactId>
-	<version>1.7.2-ec7ee4a</version>
+	<version>1.7.2-cc69f2d</version>
 	<name>SpigotCommons</name>
 	<description>Support library to spigot plugin development</description>
 	
@@ -73,8 +73,6 @@
 	</distributionManagement>
 
 	<build>
-		<finalName>${project.artifactId}-${project.version}</finalName>
-	
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
