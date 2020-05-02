@@ -2,7 +2,7 @@ package com.spigot.libraries.location;
 
 import org.bukkit.World;
 
-public class Location extends org.bukkit.Location {
+public class Location extends org.bukkit.Location implements Coordinates {
 	
 	public Location(World world, double x, double y, double z, float yaw, float pitch) {
 		super(world, x, y, z, yaw, pitch);
@@ -105,6 +105,16 @@ public class Location extends org.bukkit.Location {
     @Override
 	public Location clone() {
 		return new Location(this);
+	}
+
+	@Override
+	public Location getLocation() {
+		return this;
+	}
+	
+	@Override
+	public boolean equals(Coordinates other) {
+		return super.equals(other.getLocation());
 	}
 
 }
