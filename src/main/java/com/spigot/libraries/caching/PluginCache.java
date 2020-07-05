@@ -8,11 +8,12 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
 import org.bukkit.plugin.Plugin;
+
+import com.google.common.collect.Maps;
 
 public class PluginCache implements Map<String, Serializable> {
 	private static final String CACHE_FILENAME = ".plugin_cache";
@@ -57,7 +58,7 @@ public class PluginCache implements Map<String, Serializable> {
 		ObjectInputStream os = null;
 		try {
 			checkDirectory();
-			if(!getCacheFile().isFile()) return Collections.emptyMap();
+			if(!getCacheFile().isFile()) return Maps.newHashMap();
 			os = new ObjectInputStream(new FileInputStream(getCacheFile()));
 			return (Map<String, Serializable>) os.readObject();
 		} catch (IOException | ClassNotFoundException e) {
