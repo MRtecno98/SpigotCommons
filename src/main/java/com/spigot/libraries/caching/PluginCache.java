@@ -8,6 +8,7 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Map;
 import java.util.Set;
 
@@ -30,11 +31,15 @@ public class PluginCache implements Map<String, Serializable> {
 		pl.getDataFolder().mkdirs();
 	}
 	
-	private void saveData(Map<String, Serializable> data) {
+	protected File getCacheFile() {
+		return new File(pl.getDataFolder(), CACHE_FILENAME);
+	}
+	
+	protected void saveData(Map<String, Serializable> data) {
 		ObjectOutputStream os = null;
 		try {
 			checkDirectory();
-			os = new ObjectOutputStream(new FileOutputStream(new File(pl.getDataFolder(), CACHE_FILENAME)));
+			os = new ObjectOutputStream(new FileOutputStream(getCacheFile()));
 			os.writeObject(data);
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -48,11 +53,12 @@ public class PluginCache implements Map<String, Serializable> {
 	}
 	
 	@SuppressWarnings("unchecked")
-	private Map<String, Serializable> readData() {
+	protected Map<String, Serializable> readData() {
 		ObjectInputStream os = null;
 		try {
 			checkDirectory();
-			os = new ObjectInputStream(new FileInputStream(new File(pl.getDataFolder(), CACHE_FILENAME)));
+			if(!getCacheFile().isFile()) return Collections.emptyMap();
+			os = new ObjectInputStream(new FileInputStream(getCacheFile()));
 			return (Map<String, Serializable>) os.readObject();
 		} catch (IOException | ClassNotFoundException e) {
 			e.printStackTrace();

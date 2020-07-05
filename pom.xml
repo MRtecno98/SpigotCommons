@@ -35,7 +35,7 @@
 	</repositories>
 
 	<dependencies>
-		<!--Reflection API -->
+		<!-- Reflection API -->
 		<dependency>
 			<groupId>org.inventivetalent</groupId>
 			<artifactId>reflectionhelper</artifactId>
