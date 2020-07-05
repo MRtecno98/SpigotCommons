@@ -112,7 +112,7 @@ public class FormattingUtils {
 	}
 	
 	public static class PlaceholderParser {
-		private Map<String, String> placeholders;
+		private Map<String, String> placeholders = new HashMap<>();
 		
 		public PlaceholderParser replace(String key, String value) {
 			placeholders.put(key, value);
