@@ -6,6 +6,8 @@ import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
+import org.apache.commons.lang.text.StrSubstitutor;
+
 public class FormattingUtils {
 	
 	public static class Multipliers {
@@ -103,5 +105,22 @@ public class FormattingUtils {
 		}
 		
 		return result;
+	}
+	
+	public static PlaceholderParser newParser() {
+		return new PlaceholderParser();
+	}
+	
+	public static class PlaceholderParser {
+		private Map<String, String> placeholders;
+		
+		public PlaceholderParser replace(String key, String value) {
+			placeholders.put(key, value);
+			return this;
+		}
+		
+		public String parse(String base) {
+			return StrSubstitutor.replace(base, placeholders);
+		}
 	}
 }

@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.spigot.libraries</groupId>
 	<artifactId>spigot-commons</artifactId>
-	<version>1.7.2-6f656bf</version>
+	<version>1.7.2-99af357</version>
 	<name>SpigotCommons</name>
 	<description>Support library to spigot plugin development</description>
 	
