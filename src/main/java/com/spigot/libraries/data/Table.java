@@ -28,5 +28,5 @@ public class Table extends Cloneable<Table> {
 	public void onInitialization(Connection conn) {};
 	public void onCreation(Connection conn) {};
 	
-	public void onRegistration(DynamicDatabaseService service) {};
+	public void onRegistration(DynamicDatabaseService service, Database db) {};
 }

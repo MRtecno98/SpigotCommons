@@ -13,7 +13,7 @@ public abstract class DynamicDatabaseService implements SQLService {
 	public DynamicDatabaseService register(Database... tables) {
 		List<Database> databases = Arrays.asList(tables);
 		databases.forEach((database) -> {
-			database.getTables().forEach((table) -> table.onRegistration(this));
+			database.getTables().forEach((table) -> table.onRegistration(this, database));
 			database.onRegistration(this);
 		});
 		getDatabases().addAll(databases);
