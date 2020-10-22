@@ -29,7 +29,7 @@ You can easily add this library to your project using Maven or every other simil
 ### Groovy DSL
 ```
 repositories {
-    tecno {
+    maven {
         url "http://repo.mrtecno.online/repository/public-maven/"
     }
 }
@@ -42,7 +42,7 @@ dependencies {
 ### Kotlin DSL
 ```
 repositories {
-    tecno {
+    maven {
         url = uri("http://repo.mrtecno.online/repository/public-maven/")
     }
 }
