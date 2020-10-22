@@ -13,7 +13,10 @@ jobs:
          uses: actions/setup-java@v1
          with:
            java-version: 1.8
-           
+       
+       - name: Validate version
+         run: mvn -B validate
+       
        - name: Build with Maven
          run: mvn -B clean package -DskipTests
          
@@ -33,6 +36,9 @@ jobs:
          uses: actions/setup-java@v1
          with:
            java-version: 1.8
-           
+       
+       - name: Validate version
+         run: mvn -B validate
+       
        - name: Run unit tests
          run: mvn -B clean test
