@@ -1,4 +1,4 @@
-name: Builds
+name: Java CI
 
 on: [push]
 
@@ -27,6 +27,7 @@ jobs:
             path: target/*.jar
             
        - name: Deploy to GitHub packages
-         run: mvn -B deploy
+         # Have to skip doc and sources because GH Packages doesn't support classifiers
+         run: mvn -B deploy -Dmaven.javadoc.skip=true -Dmaven.source.skip=true
          env:
             GITHUB_TOKEN: ${{ github.token }}
