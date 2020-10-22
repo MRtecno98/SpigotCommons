@@ -28,7 +28,6 @@ import com.spigot.libraries.utility.StringUtils;
  * 
  * @author MRtecno98
  * @since 1.0
- * @category Commands
  *
  */
 public abstract class Command extends com.spigot.libraries.utility.Cloneable<Command> implements CommandExecutor {
@@ -56,7 +55,12 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 	 * Delegates to {@link #Command(JavaPlugin, String, String, String, CommandFlag...)}, defaults null for unused properties
 	 * </p>
 	 * 
-	 * @see {@link #Command(JavaPlugin, String, String, String, CommandFlag...)}
+	 * @param pl {@link org.bukkit.plugin.java.JavaPlugin} instance to link the command with at registration
+	 * @param pl {@link org.bukkit.plugin.java.JavaPlugin} instance to link the command with at registration
+	 * @param label Command label, being used for recognizing the command
+	 * @param flags Instances of {@link com.spigot.libraries.commands.CommandFlag} for manipulating command behavior
+	 * 
+	 * @see #Command(JavaPlugin, String, String, String, CommandFlag...)
 	 * 
 	 * @deprecated Registering within constructor is unsupported, use {@link #Command(String, String, CommandFlag...)}
 	 */
@@ -71,7 +75,15 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 	 * Delegates to {@link #Command(JavaPlugin, String, String, String, CommandFlag...)}, defaults null for unused properties
 	 * </p>
 	 * 
-	 * @see {@link #Command(JavaPlugin, String, String, String, CommandFlag...)}
+	 * @param pl {@link org.bukkit.plugin.java.JavaPlugin} instance to link the command with at registration
+	 * @param pl {@link org.bukkit.plugin.java.JavaPlugin} instance to link the command with at registration
+	 * @param label Command label, being used for recognizing the command
+	 * @param permission Permission node needed for executing this command, 
+	 * 		permissions are superperms defined by {@link org.bukkit.permissions.Permissible#hasPermission(String)}.
+	 * 		If null, the permissions are not checked.
+	 * @param flags Instances of {@link com.spigot.libraries.commands.CommandFlag} for manipulating command behavior
+	 * 
+	 * @see #Command(JavaPlugin, String, String, String, CommandFlag...)
 	 * 
 	 * @deprecated Registering within constructor is unsupported, use {@link #Command(String, String, CommandFlag...)}
 	 */
@@ -87,6 +99,12 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 	 * </p>
 	 * 
 	 * @param pl {@link org.bukkit.plugin.java.JavaPlugin} instance to link the command with at registration
+	 * @param label Command label, being used for recognizing the command
+	 * @param permission Permission node needed for executing this command, 
+	 * 		permissions are superperms defined by {@link org.bukkit.permissions.Permissible#hasPermission(String)}.
+	 * 		If null, the permissions are not checked.
+	 * @param permission_message Message printed to the sender if the permissions check fails, if null, defaults to {@link #DEFAULT_PERM_MESSAGE}
+	 * @param flags Instances of {@link com.spigot.libraries.commands.CommandFlag} for manipulating command behavior
 	 * 
 	 * @see #Command(String, String, String, CommandFlag...)
 	 * 
@@ -104,6 +122,9 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 	 * Delegates to {@link #Command(String, String, String, CommandFlag...)}, defaults null for unused properties
 	 * </p>
 	 * 
+	 * @param label Command label, being used for recognizing the command
+	 * @param flags Instances of {@link com.spigot.libraries.commands.CommandFlag} for manipulating command behavior
+	 * 
 	 * @see #Command(String, String, String, CommandFlag...)
 	 */
 	public Command(String label, CommandFlag... flags) {
@@ -113,6 +134,12 @@ public abstract class Command extends com.spigot.libraries.utility.Cloneable<Com
 	/**
 	 * Constructs a command without registering it<br>
 	 * Delegates to {@link #Command(String, String, String, CommandFlag...)}, defaults null for unused properties
+	 * 
+	 * @param label Command label, being used for recognizing the command
+	 * @param permission Permission node needed for executing this command, 
+	 * 		permissions are superperms defined by {@link org.bukkit.permissions.Permissible#hasPermission(String)}.
+	 * 		If null, the permissions are not checked.
+	 * @param flags Instances of {@link com.spigot.libraries.commands.CommandFlag} for manipulating command behavior
 	 * 
 	 * @see #Command(String, String, String, CommandFlag...)
 	 */

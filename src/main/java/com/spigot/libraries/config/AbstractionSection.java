@@ -7,7 +7,6 @@ import org.bukkit.configuration.MemorySection;
  * A generic configuration section, clones the base section and copies it onto itself, processing the data for specific usages.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public abstract class AbstractionSection extends MemorySection {

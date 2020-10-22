@@ -28,7 +28,7 @@ public class FormattingUtils {
 			SEC_MULTIPLIERS.put("h", (long) 60*60);
 			SEC_MULTIPLIERS.put("d", (long) 60*60*24);
             SEC_MULTIPLIERS.put("p", (long) 60*60*24*30); //Month -> Period, because 'm' was taken by Minute
-            SEC_MULTIPLIERS.put("y", (long) 60*60*24*30*12);
+            SEC_MULTIPLIERS.put("y", (long) 60*60*24*(30*12 + 5)); //365 days
 		}
 		
 		@SuppressWarnings("unchecked")

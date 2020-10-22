@@ -33,7 +33,6 @@ import com.spigot.libraries.utility.ReflectionUtils;
  * 
  * @author MRtecno98
  * @since 1.4
- * @category CommandsAnnotations
  */
 public class CommandsProcessor {
 	private List<Class<?>> classes;

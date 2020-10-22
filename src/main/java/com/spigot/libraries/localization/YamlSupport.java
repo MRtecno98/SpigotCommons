@@ -7,10 +7,11 @@ import java.io.InputStream;
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
 
+import lombok.Getter;
 import net.md_5.bungee.api.ChatColor;
 
 public class YamlSupport extends FileSupport {
-	public YamlConfiguration yaml;
+	private @Getter YamlConfiguration yaml;
 	
 	public YamlSupport(File path, String locale, InputStream defaultResource) {
 		super(path, locale, defaultResource);

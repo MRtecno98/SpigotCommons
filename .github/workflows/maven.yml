@@ -1,4 +1,4 @@
-name: builds
+name: Builds
 
 on: [push]
 
@@ -19,7 +19,13 @@ jobs:
          
        - name: Run unit tests
          run: mvn -B test
-           
+         
+       - name: Collect artifacts
+         uses: actions/upload-artifact@v2
+         with:
+            name: generated-artifacts
+            path: target/*.jar
+            
        - name: Deploy to GitHub packages
          run: mvn -B deploy
          env:

@@ -14,12 +14,11 @@ import org.bukkit.command.CommandSender;
  * Marks the method or class as linked to a command.
  * <p>
  * If used on a class, it needs to have implemented an {@code execute(CommandSender, Command, List<String>)} method.<br>
- * If used on a method, the method needs to have three and only three arguments of type {@link CommandSender}, {@link org.bukkit.Command} and {@link List}
+ * If used on a method, the method needs to have three and only three arguments of type {@link CommandSender}, {@link org.bukkit.command.Command} and {@link List}
  * </p>
  * 
  * @author MRtecno98
  * @since 1.4
- * @category CommandsAnnotations
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })

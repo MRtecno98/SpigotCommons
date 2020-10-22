@@ -93,10 +93,9 @@ public class Location extends org.bukkit.Location implements Coordinates {
 	}
 	
 	/**
-     * Get the cardinal compass direction of a player.
+     * Get the cardinal compass direction of this location.
      * 
-     * @param player
-     * @return
+     * @return the {@link CardinalDirection} this location is pointing to.
      */
     public CardinalDirection getCardinalDirection() {
         return CardinalDirection.fromLocation(this);

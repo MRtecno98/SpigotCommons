@@ -1,0 +1,4 @@
+name: SpigotCommons
+author: MRtecno98
+version: ${project.version}
+main: com.spigot.libraries.standalone.PluginClass

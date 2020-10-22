@@ -8,7 +8,6 @@ import org.bukkit.inventory.ItemStack;
  * Represents and processes a section containing information about an item.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public class ItemSection extends MappedAbstractionSection {
@@ -21,7 +20,7 @@ public class ItemSection extends MappedAbstractionSection {
 	/** Configuration key for the damage value of the Item. */
 	public static final String DAMAGE_KEY = "damage";
 	
-	/** Configuration key for the {@link ItemMetaSection} representing the {@link ItemMeta} of this Item, must be a valid ItemMetaSection. */
+	/** Configuration key for the {@link ItemMetaSection} representing the {@link org.bukkit.inventory.meta.ItemMeta} of this Item, must be a valid ItemMetaSection. */
 	public static final String META_KEY = "metadata";
 	
 	private ItemStack it;

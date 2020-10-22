@@ -15,7 +15,6 @@ import com.spigot.libraries.commands.CommandFlag;
  * @see com.spigot.libraries.commands.Command#Command(String, String, String, CommandFlag...)
  * @author MRtecno98
  * @since 1.4
- * @category CommandsAnnotations
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })

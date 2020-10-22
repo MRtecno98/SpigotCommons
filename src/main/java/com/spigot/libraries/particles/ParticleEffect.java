@@ -200,7 +200,7 @@ public enum ParticleEffect {
 	}
 
 	/**
-	 * @return the minimum {@link org.inventivetalent.reflection.minecraft.Minecraft.Version} required for this particle
+	 * @return the minimum Version required for this particle
 	 */
 	public Minecraft.Version getMinVersion() {
 		return minVersion;
@@ -214,9 +214,9 @@ public enum ParticleEffect {
 	}
 
 	/**
-	 * Check if this particle has special {@link org.inventivetalent.particle.ParticleEffect.Feature}s - Particles with features cannot use the default send() methods - Particles without features cannot use special sendColor or sendData methods
+	 * Check if this particle has special {@link com.spigot.libraries.particles.ParticleEffect.Feature}s - Particles with features cannot use the default send() methods - Particles without features cannot use special sendColor or sendData methods
 	 *
-	 * @param feature {@link org.inventivetalent.particle.ParticleEffect.Feature} to check
+	 * @param feature {@link com.spigot.libraries.particles.ParticleEffect.Feature} to check
 	 * @return <code>true</code> if this particle has the feature
 	 * @see #hasNoFeatures()
 	 */
@@ -225,7 +225,7 @@ public enum ParticleEffect {
 	}
 
 	/**
-	 * Check if this particle has no {@link org.inventivetalent.particle.ParticleEffect.Feature}s - Particles without features cannot use special sendColor or sendData methods - Particles with features cannot use the default send() methods
+	 * Check if this particle has no {@link com.spigot.libraries.particles.ParticleEffect.Feature}s - Particles without features cannot use special sendColor or sendData methods - Particles with features cannot use the default send() methods
 	 *
 	 * @return <code>true</code> if this particle has no special features
 	 * @see #hasFeature(Feature)

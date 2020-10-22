@@ -12,7 +12,6 @@ import com.spigot.libraries.enchs.EnchantmentNameMapper;
  * Processes a configuration section containing a {@code name-level} mapping of various enchantments.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public class EnchantmentSection extends AbstractionSection {

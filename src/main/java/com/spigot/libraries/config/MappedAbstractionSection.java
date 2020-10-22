@@ -6,7 +6,6 @@ import org.bukkit.configuration.ConfigurationSection;
  * Adds keyword filter functionality to the default {@link AbstractionSection}, filtering the cloning events for specific keywords given by the subclasses.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public abstract class MappedAbstractionSection extends AbstractionSection {

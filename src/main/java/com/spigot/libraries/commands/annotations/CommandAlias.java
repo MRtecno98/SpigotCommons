@@ -12,7 +12,6 @@ import java.lang.annotation.Target;
  * 
  * @author MRtecno98
  * @since 1.4
- * @category CommandsAnnotations
  */
 @Retention(RUNTIME)
 @Target({ TYPE, METHOD })

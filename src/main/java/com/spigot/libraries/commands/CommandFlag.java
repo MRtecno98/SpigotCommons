@@ -5,7 +5,6 @@ package com.spigot.libraries.commands;
  * 
  * @author MRtecno98
  * @since 1.0
- * @category Commands
  */
 public enum CommandFlag {
 	/**

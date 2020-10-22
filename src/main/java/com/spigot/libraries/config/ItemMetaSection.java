@@ -14,7 +14,6 @@ import org.bukkit.inventory.meta.ItemMeta;
  * Mapped section representing an {@link ItemMeta} object. Can be used for building items from config, as done by the {@link ItemSection} class.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public class ItemMetaSection extends MappedAbstractionSection {

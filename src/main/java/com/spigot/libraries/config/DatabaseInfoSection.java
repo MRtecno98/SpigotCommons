@@ -9,7 +9,6 @@ import org.bukkit.configuration.ConfigurationSection;
  * Processes a configuration section containing database info, outputs a {@link StructureInfo}.
  * 
  * @author MRtecno98
- * @category Configurations
  * @see <a href="https://github.com/MRtecno98/SpigotCommons/blob/master/README.md">Example usages</a>
  */
 public class DatabaseInfoSection extends MappedAbstractionSection {
@@ -123,7 +122,6 @@ public class DatabaseInfoSection extends MappedAbstractionSection {
 	 * Immutable class containing the database structure info got by processing a configuration section.
 	 * 
 	 * @author MRtecno98
-	 * @category Configurations
 	 * @see ConnectionInfoBuilder
 	 */
 	public class StructureInfo {
