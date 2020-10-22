@@ -70,3 +70,5 @@ And there you go, after the build the final jar will be stored in the `target` f
 The project's POM contains some custom profiles for automatically executing specific actions
 
 * `major-version`: Deactivates the Git Commit ID Plugin and removes its snippet from the version, used for building major versions which are not commit-linked
+* `experimental-version`: Deactivates the Git Commit ID Plugin and marks this build as `EXPERIMENTAL`, when building in a dev environment 
+    it's recommended to use this option to prevent overlap of official versions and forks.
