@@ -4,12 +4,12 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.spigot.libraries</groupId>
 	<artifactId>spigot-commons</artifactId>
-	<version>1.7.2-EXPERIMENTAL</version>
+	<version>1.7.5-EXPERIMENTAL</version>
 	<name>SpigotCommons</name>
 	<description>Support library to spigot plugin development</description>
 	
 	<properties>
-		<baseversion>1.7.2</baseversion>
+		<baseversion>1.7.5</baseversion>
 		
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
