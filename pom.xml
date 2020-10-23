@@ -44,19 +44,6 @@
 			<artifactId>reflectionhelper</artifactId>
 			<version>1.14.4-SNAPSHOT</version>
 		</dependency>
-		
-		<!-- General reflection utilities -->
-		<dependency>
-		    <groupId>org.reflections</groupId>
-		    <artifactId>reflections</artifactId>
-		    <version>0.9.12</version>
-		</dependency>
-		
-		<dependency>
-			<groupId>javassist</groupId>
-			<artifactId>javassist</artifactId>
-			<version>3.12.1.GA</version>
-		</dependency>
 
 		<!--Spigot API -->
 		<dependency>
@@ -145,8 +132,6 @@
 							<artifactSet>
 								<includes>
 									<include>org.inventivetalent:reflectionhelper</include>
-									<include>org.reflections:reflections</include>
-									<include>javassist:javassist</include>
 								</includes>
 							</artifactSet>
 
@@ -154,11 +139,6 @@
 								<relocation>
 									<pattern>org.inventivetalent</pattern>
 									<shadedPattern>com.spigot.libraries</shadedPattern>
-								</relocation>
-								
-								<relocation>
-									<pattern>org.reflections</pattern>
-									<shadedPattern>com.spigot.libraries.reflection</shadedPattern>
 								</relocation>
 							</relocations>
 						</configuration>
