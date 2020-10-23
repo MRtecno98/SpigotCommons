@@ -9,7 +9,6 @@ public class TestDirective implements PreprocessorDirective {
 	public void accept(ParsingEnvironment t, String u) {
 		CXMLPreprocessingTest.worked = true;
 		System.out.println("Test directive ran");
-		
 	}
 
 	@Override

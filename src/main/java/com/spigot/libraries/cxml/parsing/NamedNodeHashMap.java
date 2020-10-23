@@ -69,7 +69,10 @@ public class NamedNodeHashMap implements NamedNodeMap, Map<UTI, Node> {
 
 	@Override
 	public Node get(Object outi) {
-		UTI uti = (UTI) outi;
+		return get((UTI) outi);
+	}
+	
+	public Node get(UTI uti) {
 		return uti.getNamespace().isPresent() ? 
 				getNamedItemNS(uti.getNamespace().get(), uti.getName()) : 
 				getNamedItem(uti.getName());

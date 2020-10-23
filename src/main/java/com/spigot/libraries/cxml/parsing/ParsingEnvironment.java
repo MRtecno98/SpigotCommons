@@ -7,11 +7,16 @@ import org.w3c.dom.Document;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.NonNull;
 import lombok.RequiredArgsConstructor;
+import lombok.Setter;
 
 @RequiredArgsConstructor
 @AllArgsConstructor
+@NoArgsConstructor
 public class ParsingEnvironment {
+	@Getter private List<String> packagesPath = new ArrayList<>();
 	@Getter private List<Class<?>> imports = new ArrayList<>();
-	@Getter private final Document rawDocument;
+	@Getter @NonNull @Setter private Document rawDocument;
 }

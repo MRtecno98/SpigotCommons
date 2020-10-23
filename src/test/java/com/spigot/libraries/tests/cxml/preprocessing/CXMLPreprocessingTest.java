@@ -24,7 +24,7 @@ public class CXMLPreprocessingTest {
 				.getClassLoader()
 				.getResourceAsStream("testpreprocessor.xml"));
 		
-		parser.parse();
+		parser.prepare();
 		
 		assertTrue(worked);
 	}

@@ -16,10 +16,21 @@ import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import com.google.common.reflect.ClassPath.ClassInfo;
+
 public final class ReflectionUtils {
 	public static String getClassSimpleName(Class<?> clazz) {
 		String simpleName = clazz.getSimpleName();
 		return simpleName == "" ? simpleName : clazz.getSuperclass().getSimpleName();
+	}
+	
+	@SuppressWarnings("unchecked")
+	public static <T> Class<T> loadClassInfo(ClassInfo info) {
+		try {
+			return (Class<T>) Class.forName(info.getName());
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -157,6 +168,33 @@ public final class ReflectionUtils {
 				SecurityException e) {
 			e.printStackTrace();
 			return null;
+		}
+	}
+	
+	public static Object reflectionSilencedInvocation(Object inst, String name, Object... args) {
+		try {
+			return inst.getClass().getMethod(name, Arrays.asList(args)
+					.stream()
+					.map(Object::getClass)
+					.collect(Collectors.toSet())
+					.toArray(new Class<?>[args.length])).invoke(inst, args);
+		} catch (NoSuchMethodException | SecurityException | 
+				IllegalAccessException | IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
+		} catch(InvocationTargetException e) {
+			throw new RuntimeException(e.getTargetException());
+		}
+	}
+	
+	public static Object reflectionSilencedInvocation(Method m, Object inst, Object... args) {
+		try {
+			return m.invoke(inst, args);
+		} catch (SecurityException | IllegalAccessException | IllegalArgumentException e) {
+			e.printStackTrace();
+			return null;
+		} catch(InvocationTargetException e) {
+			throw new RuntimeException(e.getTargetException());
 		}
 	}
 	
