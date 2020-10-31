@@ -15,6 +15,20 @@
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 	</properties>
 	
+	<developers>
+		<developer>
+			<id>MRtecno98</id>
+		</developer>
+	</developers>
+	
+	<licenses>
+        <license>
+            <name>GNU Lesser General Public License v3</name>
+            <url>https://github.com/MRtecno98/SpigotCommons/blob/master/LICENSE</url>
+            <distribution>repo</distribution>
+        </license>
+    </licenses>
+	
 	<repositories>
 		<repository>
 			<id>inventive-repo</id>
