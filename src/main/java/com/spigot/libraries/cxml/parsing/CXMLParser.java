@@ -75,10 +75,6 @@ public class CXMLParser {
 	public void loadPackages() {
 		getEnvironment().getPackagesPath().forEach((packageName) -> {
 			try {
-				//TODO: Classpath fucks up
-				//Reflections reflections = new Reflections(packageName, new SubTypesScanner(false));
-				//Set<Class<? extends CXMLNode>> s = reflections.getSubTypesOf(CXMLNode.class);
-				
 				// Using reference classloader from which CXMLNode is loaded
 				// This assures that we search for nodes in the correct classpath even in a Spigot environment
 				ClassPath classpath = ClassPath.from(CXMLNode.class.getClassLoader());

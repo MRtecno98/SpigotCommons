@@ -1,27 +1,34 @@
 package com.spigot.libraries.data;
 
+import java.sql.Types;
+
 import com.spigot.libraries.data.expressions.Value;
 
 public enum FieldType implements IFieldType {
-	TEXT("text"), 
-	INT("int"), 
-	DECIMAL("decimal"), 
-	FLOAT("float"),
-	DOUBLE("double"),
-	REAL("real"),
-	CHAR("char"), 
-	DATE("date"), 
-	DATETIME("datetime"), 
-	TIMESTAMP("timestamp");
+	TEXT("text", Types.VARCHAR), 
+	INT("int", Types.INTEGER), 
+	DECIMAL("decimal", Types.DECIMAL), 
+	FLOAT("float", Types.FLOAT),
+	DOUBLE("double", Types.DOUBLE),
+	REAL("real", Types.REAL),
+	CHAR("char", Types.CHAR), 
+	DATE("date", Types.DATE),
+	TIMESTAMP("timestamp", Types.TIMESTAMP);
 	
 	private String sqlname;
+	private int sqltype;
 	
-	FieldType(String sqlname) {
+	FieldType(String sqlname, int sqltype) {
 		this.sqlname = sqlname;
+		this.sqltype = sqltype;
 	}
 	
 	public String getValue() {
 		return sqlname;
+	}
+	
+	public int getSQLType() {
+		return sqltype;
 	}
 	
 	public IFieldType arguments(Value... arguments) {
