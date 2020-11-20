@@ -99,8 +99,10 @@
 	     <url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
 	   </repository>
 	</distributionManagement>
-
+	
 	<build>
+		<defaultGoal>clean package</defaultGoal>
+	
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
@@ -129,6 +131,24 @@
 							<SCM-Revision>${git.commit.id.abbrev}</SCM-Revision>
 						</manifestEntries>
 					</archive>
+				</configuration>
+			</plugin>
+			
+			<plugin>
+				<artifactId>maven-clean-plugin</artifactId>
+				<version>3.1.0</version>
+				
+				<configuration>
+					<filesets>
+						<fileset>
+							<directory>.</directory>
+							<includes>
+								<include>dependency-reduced-pom.xml</include>
+								<include>pom.xml.versionsBackup</include>
+							</includes>
+							<followSymlinks>false</followSymlinks>
+						</fileset>
+					</filesets>
 				</configuration>
 			</plugin>
 
