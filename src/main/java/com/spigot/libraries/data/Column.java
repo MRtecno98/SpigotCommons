@@ -7,10 +7,10 @@ import com.spigot.libraries.utility.Cloneable;
 
 public class Column extends Cloneable<Column> {
 	private String name;
-	private FieldType type;
+	private IFieldType type;
 	private Constraint[] constraints;
 	
-	public Column(String name, FieldType type, Constraint... constraints) {
+	public Column(String name, IFieldType type, Constraint... constraints) {
 		this.name = name;
 		this.type = type;
 		this.constraints = constraints;
@@ -24,7 +24,7 @@ public class Column extends Cloneable<Column> {
 		return name;
 	}
 
-	public FieldType getType() {
+	public IFieldType getType() {
 		return type;
 	}
 	
