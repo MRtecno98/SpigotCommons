@@ -32,6 +32,11 @@ public class ReloadCommand extends Command {
 		return this;
 	}
 	
+	public ReloadCommand target(ReloadablePlugin target) {
+		this.pl = target;
+		return this;
+	}
+	
 	public String getMessage() {
 		return message;
 	}
@@ -42,10 +47,13 @@ public class ReloadCommand extends Command {
 	
 	@Override
 	public Command register(JavaPlugin pl) {
-		if(pl instanceof ReloadablePlugin) {
-			this.pl = (ReloadablePlugin) pl;
-			return super.register(pl);
-		}else throw new PluginNotProvidedException("Cannot register /reload command on a non-reloadable plugin");
+		if(getTargetPlugin() == null)
+			if(pl instanceof ReloadablePlugin) {
+				this.pl = (ReloadablePlugin) pl;
+			}else throw new PluginNotProvidedException(
+					"Cannot register /reload without a targeted reloadable plugin");
+
+		return super.register(pl);
 	}
 
 	@Override
