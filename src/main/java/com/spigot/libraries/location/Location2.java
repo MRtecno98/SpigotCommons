@@ -25,4 +25,8 @@ public class Location2 implements Coordinates {
 	public Location getLocation(double y) {
 		return new Location(getWorld(), x, y, z);
 	}
+	
+	public static Location2 fromLocation(org.bukkit.Location loc) {
+		return new Location2(loc.getWorld(), loc.getX(), loc.getZ());
+	}
 }
