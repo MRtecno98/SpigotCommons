@@ -3,18 +3,22 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 
-	<groupId>com.spigot.libraries</groupId>
+	<groupId>org.spigot.commons</groupId>
 	<artifactId>spigot-commons</artifactId>
 	<version>2.0.0-SNAPSHOT</version>
 	<packaging>pom</packaging>
-
-	<name>SpigotCommons</name>
+	
 	<description>Support library for spigot plugin development</description>
 
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 	</properties>
+
+	<modules>
+		<module>commons-cmd</module>
+		<module>commons-util</module>
+	</modules>
 
 	<developers>
 		<developer>
@@ -66,6 +70,12 @@
 			<name>GitHub MRtecno98 Apache Maven Packages</name>
 			<url>https://maven.pkg.github.com/MRtecno98/SpigotCommons</url>
 		</repository>
+		
+		<snapshotRepository>
+			<id>tecno-repo</id>
+			<name>MRtecno98 Public Snapshot Repository</name>
+			<url>https://repo.mrtecno.online/repository/maven-snapshot/</url>
+		</snapshotRepository>
 	</distributionManagement>
 
 	<build>
@@ -99,6 +109,21 @@
 							<SCM-Revision>${git.commit.id.abbrev}</SCM-Revision>
 						</manifestEntries>
 					</archive>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-surefire-plugin</artifactId>
+				<version>2.22.0</version>
+			</plugin>
+			
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-deploy-plugin</artifactId>
+				<version>3.0.0-M1</version>
+				<configuration>
+					<deployAtEnd>true</deployAtEnd>
 				</configuration>
 			</plugin>
 
