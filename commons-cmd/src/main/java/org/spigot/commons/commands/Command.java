@@ -51,7 +51,7 @@ public abstract class Command implements CommandExecutor {
 		final int finalIndex = i;
 		final String finalNextLabel = nextLabel;
 
-		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex));
+		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex), !nextCommand.isPresent());
 		if(execute(sender, context)) return true;
 
 		nextCommand.ifPresent((next) -> {
