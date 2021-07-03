@@ -7,6 +7,12 @@ import org.bukkit.Bukkit;
 import org.bukkit.OfflinePlayer;
 
 public class Players {
+	/**
+	 * Computes the UUID for an {@link OfflinePlayer} even when they are not connected
+	 * 
+	 * @param name the name of the player
+	 * @return The UUID of the player
+	 */
 	public static UUID getOfflineUUID(String name) {
 		try {
 			return UUID.nameUUIDFromBytes(("OfflinePlayer:" + name).getBytes("UTF-8"));
@@ -16,6 +22,13 @@ public class Players {
 		}
 	}
 	
+	/**
+	 * Resolves an {@link OfflinePlayer} from its name by computing its UUID first
+	 * 
+	 * @param name the name of the player
+	 * @return An instance of {@link OfflinePlayer}
+	 * @see #getOfflineUUID(String)
+	 */
 	public static OfflinePlayer offlineFromName(String name) {
 		return Bukkit.getOfflinePlayer(getOfflineUUID(name));
 	}
