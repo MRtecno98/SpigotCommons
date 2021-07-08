@@ -48,13 +48,13 @@ public abstract class Command implements CommandExecutor {
 	public abstract boolean execute(CommandSender sender, ExecutionContext context);
 	
 	@Override
-	public boolean onCommand(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label, String[] args) {
+	public synchronized boolean onCommand(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label, String[] args) {
 		List<String> arguments = Arrays.asList(args);
 		
 		String nextLabel = null;
 		Optional<Command> nextCommand = Optional.empty();
 		List<String> callArguments = new ArrayList<>();
-
+		
 		int i;
 		for (i = 0; i < arguments.size(); i++) {
 			String arg = arguments.get(i);
@@ -114,7 +114,7 @@ public abstract class Command implements CommandExecutor {
 	}
 
 	/**
-	 * Registers this Command instance to the Bukkit {@link CommandMap} singleton instance.<br>
+	 * Registers this Command instance to the Bukkit {@link org.bukkit.command.CommandMap CommandMap} singleton instance.<br>
 	 * Should not be ran if you don't expect this Command to be executed by itself without a parent supercommand.
 	 * 
 	 * @param plugin a plugin instance to link this command to, if the plugin 
@@ -130,7 +130,7 @@ public abstract class Command implements CommandExecutor {
 	}
 	
 	/**
-	 * If previously registered, unregisters this command from the Bukkit {@link CommandMap}
+	 * If previously registered, unregisters this command from the Bukkit {@link org.bukkit.command.CommandMap CommandMap}
 	 * 
 	 * @param plugin the plugin instance this command was registered with
 	 * @see #register(JavaPlugin)
@@ -174,9 +174,26 @@ public abstract class Command implements CommandExecutor {
 	 * @param cmd the instance to register as subcommand
 	 * @return This command instance
 	 */
-	public Command registerSubcommand(Command cmd) {
+	public synchronized Command registerSubcommand(Command cmd) {
 		getSubcommands().add(cmd);
 		return this;
+	}
+	
+	/**
+	 * Unregisters one or more subcommands with the given label
+	 * 
+	 * @param label all subcommands associated to this label(according to {@link #checkLabel(String)} will be removed)
+	 * @return <code>true</code> if any elements were removed
+	 */
+	public synchronized boolean unregisterSubcommand(final String label) {
+		return getSubcommands().removeIf((cmd) -> cmd.checkLabel(label));
+	}
+	
+	/**
+	 * Unregisters every subcommand registered to this command
+	 */
+	public synchronized void unregisterAllSubcommands() {
+		getSubcommands().clear();
 	}
 	
 	/**

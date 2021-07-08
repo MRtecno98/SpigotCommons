@@ -26,6 +26,8 @@ public class CommonReflection {
 	/**
 	 * Accesses the value of a private reflection field, then resets its access level
 	 * 
+	 * @param <T> type of the returned object
+	 * 
 	 * @param object the instance to access the field on, to access static fields use <code>null</code>
 	 * @param field the name of the field to access
 	 * @return The field's value
@@ -50,6 +52,8 @@ public class CommonReflection {
 	/**
 	 * Instantiates a class using a private or otherwise inaccessible constructor using reflection,
 	 * then resets the access level.
+	 * 
+	 * @param <T> type of object to instantiate
 	 * 
 	 * @param clazz the class to instantiate
 	 * @param types target constructor's arguments class types
@@ -103,7 +107,8 @@ public class CommonReflection {
 	}
 	
 	/**
-	 * Accesses the {@link CommandMap} instance from the Bukkit {@link PluginManager}
+	 * Accesses the {@link org.bukkit.command.CommandMap CommandMap} instance 
+	 * from the Bukkit {@link org.bukkit.plugin.PluginManager PluginManager}
 	 * 
 	 * @return an instance of {@link SimpleCommandMap}, the default Bukkit CommandMap implementation
 	 * 
