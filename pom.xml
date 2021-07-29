@@ -19,6 +19,7 @@
 	<modules>
 		<module>commons-cmd</module>
 		<module>commons-util</module>
+		<module>commons-gui</module>
 	</modules>
 
 	<developers>
@@ -42,8 +43,18 @@
 		</repository>
 
 		<repository>
+			<id>spigot-public</id>
+			<url>https://hub.spigotmc.org/nexus/content/repositories/public</url>
+		</repository>
+
+		<repository>
 			<id>bungeecord-repo</id>
 			<url>https://oss.sonatype.org/content/repositories/snapshots</url>
+		</repository>
+
+		<repository>
+			<id>tecno-repo</id>
+			<url>https://repo.mrtecno.tk/repository/public-maven</url>
 		</repository>
 	</repositories>
 
@@ -63,6 +74,19 @@
 			<version>1.18.10</version>
 			<scope>provided</scope>
 		</dependency>
+
+		<dependency>
+			<groupId>com.github.seeseemelk</groupId>
+			<artifactId>MockBukkit</artifactId>
+			<version>v1.12</version>
+			<scope>test</scope>
+			<exclusions>
+				<exclusion>
+					<groupId>org.bukkit</groupId>
+					<artifactId>bukkit</artifactId>
+				</exclusion>
+			</exclusions>
+		</dependency>
 	</dependencies>
 
 	<distributionManagement>
@@ -75,7 +99,7 @@
 		<snapshotRepository>
 			<id>tecno-repo</id>
 			<name>MRtecno98 Public Snapshot Repository</name>
-			<url>https://repo.mrtecno.online/repository/maven-snapshot/</url>
+			<url>https://repo.mrtecno.tk/repository/maven-snapshot/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -85,6 +109,11 @@
 		<resources>
 			<resource>
 				<directory>src/main/resources</directory>
+				<filtering>true</filtering>
+			</resource>
+			
+			<resource>
+				<directory>src/test/resources</directory>
 				<filtering>true</filtering>
 			</resource>
 		</resources>
@@ -139,7 +168,9 @@
 			</plugin>
 
 			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-source-plugin</artifactId>
+				<version>3.2.1</version>
 				<executions>
 					<execution>
 						<id>attach-sources</id>
@@ -166,7 +197,7 @@
 						<configuration>
 							<sourcepath>${delombok.output}</sourcepath>
 							<doctitle>Spigot Commons CommandsAPI v${project.version}</doctitle>
-							
+
 							<links>
 								<link>https://hub.spigotmc.org/javadocs/bukkit/</link>
 							</links>
