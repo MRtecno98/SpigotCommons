@@ -1,0 +1,5 @@
+name: GUITestPlugin
+version: ${project.version}
+description: Test plugin used in commons-gui unit tests
+main: org.spigot.commons.tests.gui.GUITestPlugin
+author: MRtecno98
