@@ -11,7 +11,7 @@ import org.junit.Test;
 import org.spigot.commons.gui.InventoryGUI;
 import org.spigot.commons.gui.component.CraftComponent;
 import org.spigot.commons.gui.component.DisplayContext;
-import org.spigot.commons.gui.inventory.CartesianLocation;
+import org.spigot.commons.gui.inventory.Vector;
 
 import be.seeseemelk.mockbukkit.MockBukkit;
 
@@ -29,7 +29,7 @@ public class BuildingTests {
 	
 	@Test
 	public void inventoryBuildTest() {
-		final CartesianLocation loc = new CartesianLocation(4, 1);
+		final Vector loc = new Vector(4, 1);
 		final ItemStack it = new ItemStack(Material.STONE, 5);
 		
 		InventoryGUI gui = new InventoryGUI("Test GUI", 27);

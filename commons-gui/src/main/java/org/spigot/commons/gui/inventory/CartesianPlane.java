@@ -7,15 +7,15 @@ public interface CartesianPlane<T> {
 	
 	public void clearSlot(int x, int y);
 	
-	public default void setItem(CartesianLocation loc, T item) {
+	public default void setItem(Vector loc, T item) {
 		setItem(loc.getX(), loc.getY(), item);
 	}
 	
-	public default T getItem(CartesianLocation loc) {
+	public default T getItem(Vector loc) {
 		return getItem(loc.getX(), loc.getY());
 	}
 	
-	public default void clearSlot(CartesianLocation loc) {
+	public default void clearSlot(Vector loc) {
 		clearSlot(loc.getX(), loc.getY());
 	}
 }

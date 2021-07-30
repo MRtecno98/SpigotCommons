@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.spigot.commons.gui.inventory.CartesianInventory;
-import org.spigot.commons.gui.inventory.CartesianLocation;
+import org.spigot.commons.gui.inventory.Vector;
 import org.spigot.commons.gui.inventory.CartesianPlane;
 import org.spigot.commons.util.delegator.DelegatorList;
 
@@ -15,7 +15,7 @@ public class LayerPlane extends DelegatorList<ComponentLayer> implements Cartesi
 
 	@Override
 	public void setItem(int x, int y, GUIComponent item) {
-		add(new ComponentLayer(CartesianLocation.of(x, y), item));
+		add(new ComponentLayer(Vector.of(x, y), item));
 	}
 
 	@Override
