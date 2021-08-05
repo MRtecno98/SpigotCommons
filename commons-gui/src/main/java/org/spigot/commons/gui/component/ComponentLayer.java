@@ -8,11 +8,17 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public class ComponentLayer {
+public class ComponentLayer implements GUIComponent {
 	private final Vector location;
 	private final GUIComponent component;
-	
-	public void draw(CartesianInventory inventory, DisplayContext context) {
-		getComponent().draw(inventory, getLocation(), context);
+
+	@Override
+	public void draw(CartesianInventory inv, Vector loc, DisplayContext context) {
+		getComponent().draw(inv, getLocation().add(loc), context);
+	}
+
+	@Override
+	public boolean callback(ComponentInteraction inter, DisplayContext context) {
+		return getComponent().callback(inter.withLocation(inter.getLocation().sub(getLocation())), context);
 	}
 }
