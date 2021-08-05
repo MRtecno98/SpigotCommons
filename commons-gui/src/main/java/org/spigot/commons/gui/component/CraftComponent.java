@@ -9,16 +9,11 @@ import lombok.Getter;
 
 @Getter
 @AllArgsConstructor
-public class CraftComponent implements GUIComponent {
+public abstract class CraftComponent implements GUIComponent {
 	private ItemStack item;
 	
 	@Override
 	public void draw(CartesianInventory inv, Vector loc, DisplayContext context) {
 		inv.setItem(loc.getX(), loc.getY(), getItem());
-	}
-
-	@Override
-	public boolean callback(ComponentInteraction inter, DisplayContext context) {
-		return true;
 	}
 }
