@@ -59,6 +59,6 @@ public class Vector {
 	}
 	
 	public static Vector fromSlot(int slot) {
-		return fromSlot(DEFAULT_ROW_SIZE);
+		return fromSlot(slot, DEFAULT_ROW_SIZE);
 	}
 }
