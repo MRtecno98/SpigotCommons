@@ -20,6 +20,7 @@
 		<module>commons-cmd</module>
 		<module>commons-util</module>
 		<module>commons-gui</module>
+		<module>commons-serial</module>
 	</modules>
 
 	<developers>
