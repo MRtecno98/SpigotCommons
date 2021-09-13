@@ -34,4 +34,18 @@ public class CommandTests {
 		assertEquals(cmd.data2, subcmd.data2);
 		assertEquals(cmd.data3, subcmd.data3);
 	}
+	
+	@Test
+	public void minCommandTest() {
+		MinArgTestCommand cmd = new MinArgTestCommand();
+		
+		cmd.onCommand(null, null, "test", new String[] { "aaaa", "sub" });
+	}
+	
+	@Test(expected = AssertionError.class)
+	public void minCommandTestFail() {
+		MinArgTestCommand cmd = new MinArgTestCommand();
+		
+		cmd.onCommand(null, null, "test", new String[] { "aaaa", "bbbb", "sub" });
+	}
 }
