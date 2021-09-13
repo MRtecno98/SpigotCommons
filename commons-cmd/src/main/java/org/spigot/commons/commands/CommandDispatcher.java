@@ -3,9 +3,11 @@ package org.spigot.commons.commands;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 
 import lombok.Getter;
@@ -20,7 +22,7 @@ import lombok.NoArgsConstructor;
  */
 @Getter
 @NoArgsConstructor
-public class CommandDispatcher implements CommandExecutor {
+public class CommandDispatcher implements CommandExecutor, TabCompleter {
 	private Collection<Command> commands = new ArrayList<>();
 	
 	/**
@@ -58,5 +60,14 @@ public class CommandDispatcher implements CommandExecutor {
 			.filter((cmd) -> cmd.checkLabel(label))
 			.findFirst().get()
 			.onCommand(sender, command, label, args);
+	}
+
+	@Override
+	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command command, String label,
+			String[] args) {
+		return getCommands().stream()
+				.filter((cmd) -> cmd.checkLabel(label))
+				.findFirst().get()
+				.onTabComplete(sender, command, label, args);
 	}
 }

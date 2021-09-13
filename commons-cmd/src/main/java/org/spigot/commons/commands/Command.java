@@ -6,15 +6,18 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
 import org.bukkit.command.PluginCommand;
 import org.bukkit.command.SimpleCommandMap;
+import org.bukkit.command.TabCompleter;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spigot.commons.commands.annotations.Inherit;
 import org.spigot.commons.commands.annotations.NoInherit;
 import org.spigot.commons.util.CommonReflection;
+import org.spigot.commons.util.Triplet;
 
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
@@ -32,7 +35,7 @@ import lombok.RequiredArgsConstructor;
 @Getter
 @NoInherit
 @RequiredArgsConstructor
-public abstract class Command implements CommandExecutor {
+public abstract class Command implements CommandExecutor, TabCompleter {
 	private final String label;
 	private int minimumArguments = 0;
 	private Collection<Command> subcommands = new ArrayList<>();
@@ -52,6 +55,10 @@ public abstract class Command implements CommandExecutor {
 	 * @return If true, stops the command chain call even if there are more subcommands entered by the user
 	 */
 	public abstract boolean execute(CommandSender sender, ExecutionContext context);
+	
+	public List<String> tabComplete(CommandSender sender, ExecutionContext context) {
+		return null;
+	}
 	
 	@Override
 	public synchronized boolean onCommand(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label, String[] args) {
@@ -105,6 +112,36 @@ public abstract class Command implements CommandExecutor {
 		});
 
 		return true;
+	}
+	
+	@Override
+	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command bukkitCommand, 
+			String label, String[] args) {
+		List<String> arguments = Arrays.asList(args);
+		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
+		
+		final Optional<Command> nextCommand = nextExec.getA();
+		final int finalIndex = nextExec.getB();
+		final String finalNextLabel = nextExec.getC();
+		
+		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex), nextCommand);
+		
+		if(!nextCommand.isPresent())
+			if(finalIndex >= getMinimumArguments())
+				return getSubcommands().stream()
+						.map(Command::getLabel).collect(Collectors.toList());
+			else return tabComplete(sender, context);
+		else {
+			// Cut away all arguments we already processed AND the subcommand label
+			// Delimiters are i + 1(to cut away the label) and the list size
+			// (a.k.a. end of the list), so final size will be the subtraction.
+			String[] subArgs = finalIndex != arguments.size() ?
+					arguments.subList(finalIndex + 1, arguments.size())
+						.toArray(new String[arguments.size() - finalIndex - 1])
+					: new String[0];
+			
+			return nextCommand.get().onTabComplete(sender, bukkitCommand, finalNextLabel, subArgs);
+		}
 	}
 	
 	protected Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
