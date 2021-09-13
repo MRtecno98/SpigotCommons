@@ -17,6 +17,7 @@ import com.google.gson.JsonParser;
 
 public class Players {
 	public static final String CHECK_ENDPOINT_FORMAT = "https://api.mojang.com/users/profiles/minecraft/%s";
+	public static final String NAMES_MATCH = "^[a-zA-Z0-9_]{3,16}$";
 	
 	/**
 	 * Computes the UUID for an {@link OfflinePlayer} even when they are not connected
@@ -71,6 +72,8 @@ public class Players {
 	
 	public static Optional<UUID> getOnlineUUID(String name) {
 		try {
+			if(!name.matches(NAMES_MATCH)) return Optional.empty();
+			
 			URL url = new URL(String.format(CHECK_ENDPOINT_FORMAT, name));
 			
 			HttpURLConnection connection = (HttpURLConnection) url.openConnection();
