@@ -1,6 +1,7 @@
 package org.spigot.commons.commands;
 
 import java.util.List;
+import java.util.Optional;
 
 import lombok.Value;
 
@@ -31,11 +32,11 @@ public class ExecutionContext {
 	private List<String> callArguments;
 	
 	/**
-	 * A flag specifying if this command is 
-	 * the last one in the subcommand chain call
-	 * 
-	 * @return <code>true</code> if this is the last command 
-	 * in the chain, <code>false</code> otherwise
+	 * The next command in the chain, if present
 	 */
-	private boolean isLastCommand;
+	private Optional<Command> nextCommand;
+	
+	public boolean isLastCommand() {
+		return !getNextCommand().isPresent();
+	}
 }

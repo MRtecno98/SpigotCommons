@@ -34,7 +34,13 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public abstract class Command implements CommandExecutor {
 	private final String label;
+	private int minimumArguments = 0;
 	private Collection<Command> subcommands = new ArrayList<>();
+	
+	public Command(String label, int minimumArguments) {
+		this(label);
+		this.minimumArguments = minimumArguments;
+	}
 	
 	/**
 	 * Runs all the command logic other than argument parsing and the calling of subcommands,
@@ -50,27 +56,13 @@ public abstract class Command implements CommandExecutor {
 	@Override
 	public synchronized boolean onCommand(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label, String[] args) {
 		List<String> arguments = Arrays.asList(args);
+		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
 		
-		String nextLabel = null;
-		Optional<Command> nextCommand = Optional.empty();
-		List<String> callArguments = new ArrayList<>();
-		
-		int i;
-		for (i = 0; i < arguments.size(); i++) {
-			String arg = arguments.get(i);
-			nextCommand = getSubcommands().stream()
-					.filter((cmd) -> cmd.checkLabel(arg)).findAny();
+		final Optional<Command> nextCommand = nextExec.getA();
+		final int finalIndex = nextExec.getB();
+		final String finalNextLabel = nextExec.getC();
 
-			if (nextCommand.isPresent()) {
-				nextLabel = arg;
-				break;
-			} else callArguments.add(arg);
-		}
-		
-		final int finalIndex = i;
-		final String finalNextLabel = nextLabel;
-
-		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex), !nextCommand.isPresent());
+		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex), nextCommand);
 		if(execute(sender, context)) return true;
 
 		nextCommand.ifPresent((next) -> {
@@ -104,13 +96,40 @@ public abstract class Command implements CommandExecutor {
 			// Cut away all arguments we already processed AND the subcommand label
 			// Delimiters are i + 1(to cut away the label) and the list size
 			// (a.k.a. end of the list), so final size will be the subtraction.
-			String[] subArgs = arguments.subList(finalIndex + 1, arguments.size())
-					.toArray(new String[arguments.size() - finalIndex - 1]);
+			String[] subArgs = finalIndex != arguments.size() ?
+					arguments.subList(finalIndex + 1, arguments.size())
+						.toArray(new String[arguments.size() - finalIndex - 1])
+					: new String[0];
 			
 			next.onCommand(sender, bukkitCommand, finalNextLabel, subArgs);
 		});
 
 		return true;
+	}
+	
+	protected Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
+		List<String> arguments = Arrays.asList(args);
+		
+		String nextLabel = null;
+		Optional<Command> nextCommand = Optional.empty();
+		List<String> callArguments = new ArrayList<>();
+		
+		int i;
+		for (i = 0; i < arguments.size(); i++) {
+			String arg = arguments.get(i);
+			nextCommand = getSubcommands().stream()
+					.filter((cmd) -> cmd.checkLabel(arg)).findAny();
+
+			if (nextCommand.isPresent() && i >= getMinimumArguments()) {
+				nextLabel = arg;
+				break;
+			} else {
+				callArguments.add(arg);
+				nextCommand = Optional.empty();
+			}
+		}
+		
+		return new Triplet<>(nextCommand, i, nextLabel);
 	}
 
 	/**
