@@ -20,10 +20,11 @@
 		<module>commons-cmd</module>
 		<module>commons-util</module>
 		<module>commons-gui</module>
-		<module>commons-serial</module>
+		<module>commons-cxml</module>
+		<module>commons-config</module>
 	</modules>
 
-	<developers>
+	<developers>	
 		<developer>
 			<id>MRtecno98</id>
 		</developer>
