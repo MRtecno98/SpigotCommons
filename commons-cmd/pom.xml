@@ -17,5 +17,13 @@
 			<artifactId>commons-util</artifactId>
 			<version>${project.version}</version>
 		</dependency>
+		
+		<dependency>
+			<groupId>org.spigot.commons</groupId>
+			<artifactId>commons-util</artifactId>
+			<version>${project.version}</version>
+			<type>test-jar</type>
+			<scope>test</scope>
+		</dependency>
 	</dependencies>
 </project>
