@@ -1,9 +1,13 @@
-bin/
+**/bin/
 
 .settings/
 .classpath
 .project
 
-/target/
-/dependency-reduced-pom.xml
-/pom.xml.versionsBackup
+**/target/
+**/dependency-reduced-pom.xml
+**/pom.xml.versionsBackup
+
+**/.factorypath
+**/.apt_generated/
+**/.apt_generated_tests/
