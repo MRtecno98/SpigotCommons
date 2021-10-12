@@ -144,7 +144,8 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 		}
 	}
 	
-	protected Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
+	// Using an external method to share it between onCommand and onTabComplete
+	private Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
 		List<String> arguments = Arrays.asList(args);
 		
 		String nextLabel = null;
