@@ -7,6 +7,7 @@ import org.bukkit.event.HandlerList;
 import org.bukkit.event.Listener;
 import org.bukkit.event.inventory.InventoryClickEvent;
 import org.bukkit.inventory.Inventory;
+import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spigot.commons.gui.component.ComponentInteraction;
@@ -14,6 +15,7 @@ import org.spigot.commons.gui.component.DisplayContext;
 import org.spigot.commons.gui.component.LayerPlane;
 import org.spigot.commons.gui.inventory.CraftCartesianInventory;
 import org.spigot.commons.gui.inventory.Vector;
+import org.spigot.commons.util.delegator.DelegatorHolder;
 
 import lombok.Getter;
 import lombok.Setter;
@@ -37,11 +39,15 @@ public class InventoryGUI {
 	}
 	
 	public Inventory build(DisplayContext context) {
-		CraftCartesianInventory inv = new GUIInventory(
-				Bukkit.createInventory(context.getHolder(), getSize(), getTitle()));
-		getItems().draw(inv, Vector.ZERO, context);
+		GUIInventoryHolder holder = new GUIInventoryHolder(context.getHolder());
 		
-		return inv;
+		GUIInventory inv = new GUIInventory(
+				Bukkit.createInventory(holder, getSize(), getTitle()));
+		holder.setLinkedInventory(inv);
+		
+		getItems().draw(inv, Vector.ZERO, context.withHolder(holder));
+		
+		return inv.getDelegate();
 	}
 	
 	public InventoryView show(Player p) {
@@ -63,10 +69,11 @@ public class InventoryGUI {
 	public class GUIListener implements Listener {
 		@EventHandler
 		public void onClick(InventoryClickEvent event) {
-			if(event.getInventory() instanceof GUIInventory) {
+			InventoryHolder holder = event.getInventory().getHolder();
+			if(holder instanceof GUIInventoryHolder) {
 				// This inventory is an IGUI registered by 
 				// some instance of this class
-				GUIInventory inv = (GUIInventory) event.getInventory();
+				GUIInventory inv = ((GUIInventoryHolder) holder).getLinkedInventory();
 				
 				if(inv.getParent().equals(InventoryGUI.this)) {
 					// This inventory is an IGUI registered by
@@ -97,6 +104,16 @@ public class InventoryGUI {
 		
 		public InventoryGUI getParent() {
 			return InventoryGUI.this;
+		}	
+	}
+	
+	@Getter
+	@Setter
+	public class GUIInventoryHolder extends DelegatorHolder {
+		private GUIInventory linkedInventory;
+		
+		public GUIInventoryHolder(InventoryHolder delegate) {
+			super(delegate);
 		}
 	}
 }

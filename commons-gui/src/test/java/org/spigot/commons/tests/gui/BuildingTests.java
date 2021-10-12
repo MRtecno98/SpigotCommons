@@ -10,6 +10,7 @@ import org.bukkit.Material;
 import org.bukkit.inventory.ItemStack;
 import org.junit.Test;
 import org.spigot.commons.gui.InventoryGUI;
+import org.spigot.commons.gui.InventoryGUI.GUIInventoryHolder;
 import org.spigot.commons.gui.component.ComponentInteraction;
 import org.spigot.commons.gui.component.CraftComponent;
 import org.spigot.commons.gui.component.DisplayContext;
@@ -31,8 +32,8 @@ public class BuildingTests extends BukkitTests {
 			}
 		});
 		
-		CraftCartesianInventory inv = (CraftCartesianInventory)
-				gui.build(DisplayContext.NULL_CONTEXT);
+		CraftCartesianInventory inv = (CraftCartesianInventory) ((GUIInventoryHolder)
+				gui.build(DisplayContext.NULL_CONTEXT).getHolder()).getLinkedInventory();
 		
 		ItemStack[] its = inv.getContents();
 		for(int i = 0; i < its.length; i++) {
@@ -59,8 +60,8 @@ public class BuildingTests extends BukkitTests {
 			}
 		});
 		
-		CraftCartesianInventory inv = (CraftCartesianInventory)
-				gui.build(DisplayContext.NULL_CONTEXT);
+		CraftCartesianInventory inv = (CraftCartesianInventory) ((GUIInventoryHolder)
+				gui.build(DisplayContext.NULL_CONTEXT).getHolder()).getLinkedInventory();
 		
 		List<Set<Integer>> mapLayers = inv.getClickMap().getMapLayers();
 		
