@@ -1,7 +1,6 @@
 package org.spigot.commons.commands.builtin;
 
 import org.bukkit.command.CommandSender;
-import org.bukkit.entity.Player;
 import org.spigot.commons.commands.Command;
 
 import lombok.Getter;
