@@ -32,9 +32,9 @@ pipeline {
     	}
     	
     	stage("Deploy") {
-    	    when {
+    	    /* when {
 				buildingTag()
-			}
+			} */
 			
 			steps {
 			    withMaven(
