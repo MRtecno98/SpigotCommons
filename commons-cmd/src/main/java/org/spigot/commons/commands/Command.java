@@ -99,6 +99,7 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 					}
 
 					// Copy all data to inherited fields of next subcommand
+					f.setAccessible(true);
 					nextF.setAccessible(true);
 					nextF.set(next, f.get(this));
 
