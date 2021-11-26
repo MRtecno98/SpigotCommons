@@ -32,9 +32,13 @@ pipeline {
     	}
     	
     	stage("Deploy") {
-    	    /* when {
-				buildingTag()
-			} */
+			when {
+				allOf {
+					// buildingTag()
+					environment name: 'CHANGE_ID', value: ''
+					// branch 'master'
+				}
+			}
 			
 			steps {
 			    withMaven(
