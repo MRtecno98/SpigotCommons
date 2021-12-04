@@ -21,6 +21,19 @@ public class TabCompleteTests {
 		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa" });
 		assertEquals(TabCompleteTestCommand.CONTROL_DATA, test);
 	}
+
+	@Test
+	public void testSingleComplete() {
+		ArgTabCompleteTestCommand cmd = new ArgTabCompleteTestCommand();
+		
+		List<String> test;
+		
+		test = cmd.onTabComplete(null, null, "testsingle", new String[0]);
+		assertEquals(ArgTabCompleteTestCommand.CONTROL_DATA, test);
+		
+		test = cmd.onTabComplete(null, null, "testsingle", new String[] { "aaaa", "" });
+		assertEquals(Collections.emptyList(), test);
+	}
 	
 	@Test
 	public void testSubcommandComplete() {
@@ -28,11 +41,11 @@ public class TabCompleteTests {
 		
 		List<String> test;
 
-		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb" });
+		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb", "" });
 		assertEquals(Collections.emptyList(), test);
 		
 		cmd.registerSubcommand(new TabCompleteSubcommand());
-		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb" });
+		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb", "" });
 		assertEquals(Arrays.asList("sub"), test);
 	}
 	
@@ -43,7 +56,7 @@ public class TabCompleteTests {
 		
 		List<String> test;
 
-		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb", "sub" });
+		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa", "bbbb", "sub", "" });
 		assertEquals(TabCompleteSubcommand.CONTROL_DATA, test);
 	}
 }

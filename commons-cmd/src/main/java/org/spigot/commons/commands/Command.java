@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import org.spigot.commons.commands.annotations.Inherit;
 import org.spigot.commons.commands.annotations.NoInherit;
 import org.spigot.commons.util.CommonReflection;
+import org.spigot.commons.util.Strings;
 import org.spigot.commons.util.Triplet;
 
 import lombok.Getter;
@@ -125,6 +126,12 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label,
 			String[] args) {
+		// Spigot adds an empty string at the end of the arguments to signal a space press
+		// A space press signals that we need to autocomplete, but if that is not present
+		// we need to replace the previous value
+		if(args.length > 0 && args[args.length - 1] != "")
+				args[args.length - 1] = "";
+
 		List<String> arguments = Arrays.asList(args);
 		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
 
@@ -153,7 +160,7 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 
 	// Using an external method to share it between onCommand and onTabComplete
 	private Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
-		List<String> arguments = Arrays.asList(args);
+		List<String> arguments = Arrays.asList(Strings.stripEmpty(args));
 
 		String nextLabel = null;
 		Optional<Command> nextCommand = Optional.empty();
