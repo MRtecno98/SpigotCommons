@@ -44,7 +44,7 @@ pipeline {
 			    withMaven(
                 	globalMavenSettingsConfig: "fb86ca6b-4fd8-4c7b-87a0-871913764d10"
                 ) {
-    	            sh "mvn deploy"
+    	            sh "mvn -X deploy"
     	        }
 			}
     	}
