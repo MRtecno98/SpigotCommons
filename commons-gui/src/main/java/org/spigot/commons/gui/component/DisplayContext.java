@@ -5,13 +5,15 @@ import org.bukkit.inventory.InventoryHolder;
 import org.spigot.commons.gui.component.ContextData.EmptyData;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
 import lombok.RequiredArgsConstructor;
-import lombok.Value;
 import lombok.experimental.FieldDefaults;
 import lombok.experimental.Wither;
 
-@Value
 @Wither
+@Getter
+@EqualsAndHashCode
 @AllArgsConstructor
 @RequiredArgsConstructor
 @SuppressWarnings("deprecation")
