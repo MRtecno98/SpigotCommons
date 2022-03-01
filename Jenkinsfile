@@ -42,7 +42,7 @@ pipeline {
 			
 			steps {
 			    withMaven {
-    	            sh "mvn -X deploy"
+    	            sh "mvn deploy"
     	        }
 			}
     	}
