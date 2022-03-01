@@ -3,6 +3,7 @@
 .settings/
 .classpath
 .project
+.vscode/
 
 **/target/
 **/dependency-reduced-pom.xml
