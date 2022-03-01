@@ -1,5 +1,9 @@
 package org.spigot.commons.gui;
 
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
+
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.event.EventHandler;
@@ -11,6 +15,7 @@ import org.bukkit.inventory.InventoryHolder;
 import org.bukkit.inventory.InventoryView;
 import org.bukkit.plugin.java.JavaPlugin;
 import org.spigot.commons.gui.component.ComponentInteraction;
+import org.spigot.commons.gui.component.ContextData;
 import org.spigot.commons.gui.component.DisplayContext;
 import org.spigot.commons.gui.component.LayerPlane;
 import org.spigot.commons.gui.inventory.CraftCartesianInventory;
@@ -28,7 +33,8 @@ public class InventoryGUI {
 	
 	private LayerPlane items = new LayerPlane();
 	private final GUIListener listener = new GUIListener();
-
+	private final Map<UUID, ContextData> data = new HashMap<>();
+	
 	public InventoryGUI(String title, int size) {
 		this.title = title;
 		this.size = size;
@@ -51,7 +57,7 @@ public class InventoryGUI {
 	}
 	
 	public InventoryView show(Player p) {
-		return show(p, DisplayContext.buildDefaultFor(p));
+		return show(p, DisplayContext.buildDefaultFor(p, provideData(p.getUniqueId())));
 	}
 	
 	public InventoryView show(Player p, DisplayContext context) {
@@ -64,6 +70,12 @@ public class InventoryGUI {
 	
 	public void unregister(JavaPlugin plugin) {
 		HandlerList.unregisterAll(getListener());
+	}
+
+	private ContextData provideData(UUID id) {
+		if(!data.containsKey(id))
+			data.put(id, new ContextData(id));
+		return data.get(id);
 	}
 	
 	public class GUIListener implements Listener {
@@ -85,9 +97,10 @@ public class InventoryGUI {
 					
 					// Provide a context if the Human is a Player
 					DisplayContext context;
-					if(event.getWhoClicked() instanceof Player)
-						context = DisplayContext.buildDefaultFor((Player) event.getWhoClicked());
-					else context = DisplayContext.NULL_CONTEXT;
+					if(event.getWhoClicked() instanceof Player) {
+						Player p = (Player) event.getWhoClicked();
+						context = DisplayContext.buildDefaultFor(p, provideData(p.getUniqueId()));
+					} else context = DisplayContext.NULL_CONTEXT;
 					
 					// Calling callback and ORing cancel status
 					event.setCancelled(event.isCancelled() || 
