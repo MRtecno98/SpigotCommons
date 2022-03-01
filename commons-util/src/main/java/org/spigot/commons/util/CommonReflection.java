@@ -4,6 +4,8 @@ import java.lang.reflect.Constructor;
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationTargetException;
 
+import com.google.common.reflect.ClassPath.ClassInfo;
+
 import org.bukkit.Bukkit;
 import org.bukkit.command.Command;
 import org.bukkit.command.PluginCommand;
@@ -47,6 +49,22 @@ public class CommonReflection {
 		objectField.setAccessible(wasAccessible);
 
 		return (T) result;
+	}
+
+	/**
+	 * Loads the class pointed to from a Guava ClassInfo object and
+	 * silences eventual {@link ClassNotFoundException}(s)
+	 * 
+	 * @param <T> the Class object type
+	 * @param info
+	 * @return the loaded {@link Class} object
+	 */
+	public static <T> Class<T> loadClassInfo(ClassInfo info) {
+		try {
+			return (Class<T>) Class.forName(info.getName());
+		} catch (ClassNotFoundException e) {
+			throw new RuntimeException(e);
+		}
 	}
 	
 	/**
