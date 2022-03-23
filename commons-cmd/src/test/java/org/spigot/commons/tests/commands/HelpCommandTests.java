@@ -10,7 +10,9 @@ import org.spigot.commons.tests.TrackSender;
 
 public class HelpCommandTests {
 	public static final String CONTROL_DESCRIPTION = "<arg1> <arg2>";
-	public static final String CONTROL_FORMAT = "testBefore\0%s %s";
+	public static final String CONTROL_FORMAT = "testBefore %s %s";
+
+	public static final String CONTROL_HEADER = "Testing header";
 	
 	@Test
 	public void basicHelpTest() {
@@ -50,6 +52,39 @@ public class HelpCommandTests {
 		assertEquals(Arrays.asList(
 					"/test",
 					"/test sub"
+				), sender.getMessages());
+	}
+
+	@Test
+	public void helpHeaderTest() {
+		HelpTestCommand base = new HelpTestCommand();
+		HelpCommand cmd = HelpCommand.builder().label("help")
+							.command(base)
+							.header(CONTROL_HEADER)
+							.build();
+		
+		TrackSender sender = new TrackSender();
+		cmd.onCommand(sender, null, "help", new String[0]);
+		
+		assertEquals(Arrays.asList(
+					CONTROL_HEADER,
+					"/test"
+				), sender.getMessages());
+	}
+
+	@Test
+	public void helpFormatTest() {
+		HelpAnnotationTestCommand base = new HelpAnnotationTestCommand();
+		HelpCommand cmd = HelpCommand.builder().label("help")
+							.command(base)
+							.format(CONTROL_FORMAT)
+							.build();
+		
+		TrackSender sender = new TrackSender();
+		cmd.onCommand(sender, null, "help", new String[0]);
+		
+		assertEquals(Arrays.asList(
+					String.format(CONTROL_FORMAT, "/test", CONTROL_DESCRIPTION)
 				), sender.getMessages());
 	}
 }
