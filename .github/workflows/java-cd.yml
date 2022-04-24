@@ -1,6 +1,9 @@
-name: Java CD
+name: Legacy Java CD
 
-on: [push]
+on:
+  push:
+    branches:
+      - legacy
 
 jobs:
   deploy:
