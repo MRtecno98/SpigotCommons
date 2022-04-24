@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.spigot.libraries</groupId>
 	<artifactId>spigot-commons</artifactId>
-	<version>1.7.5-EXPERIMENTAL</version>
+	<version>1.7.5-f6cd60e</version>
 	<name>SpigotCommons</name>
 	<description>Support library to spigot plugin development</description>
 	
@@ -71,7 +71,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.10</version>
+			<version>1.18.22</version>
 			<scope>provided</scope>
 		</dependency>
 		

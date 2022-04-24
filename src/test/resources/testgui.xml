@@ -7,7 +7,7 @@
 	controller="com.spigot.libraries.tests.cxml.TestingGuiController"
 	plugin="#getPlugin">
 	
-	<!-- 
+	<!--
 	<item type="stick" slot="[1,2]" amount="1" />
 
 	<item type="wool" tickspeed="20">
@@ -28,7 +28,7 @@
 
 		<flags enchanted="true" />
 
-		 Switches the stick and the stone --> <!--
+		Switches the stick and the stone
 		<action event="click" execute="onCenterClick" />
 
 		<action event="tick">
@@ -54,5 +54,5 @@
 
 		<item type="stained_glass_pane" meta="7" name="" />
 	</pattern>
-	 -->
+	-->
 </inventory>

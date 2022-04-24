@@ -3,6 +3,8 @@ package com.spigot.libraries.localization;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
+import java.util.Optional;
+import java.util.regex.Pattern;
 
 import org.bukkit.configuration.InvalidConfigurationException;
 import org.bukkit.configuration.file.YamlConfiguration;
@@ -26,7 +28,7 @@ public class YamlSupport extends FileSupport {
 	public void reloadSupport() {
 		yaml = new YamlConfiguration();
 		try {
-			yaml.load(getFile());
+			getYaml().load(getFile());
 		} catch (IOException | InvalidConfigurationException e) {
 			e.printStackTrace();
 		}
@@ -34,6 +36,10 @@ public class YamlSupport extends FileSupport {
 
 	@Override
 	public String getLocalizedText(String key) {
-		return yaml.getString(key).replace('&', ChatColor.COLOR_CHAR);
+		return Optional.ofNullable(getYaml().getString(key))
+					.map((text) -> text.replace('&', ChatColor.COLOR_CHAR))
+					.map((text) -> text.replaceAll(
+							Pattern.quote("\\t"), String.valueOf('\t')))
+					.orElse(null);
 	}
 }

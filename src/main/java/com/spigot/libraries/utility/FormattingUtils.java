@@ -1,6 +1,7 @@
 package com.spigot.libraries.utility;
 
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,7 +78,10 @@ public class FormattingUtils {
 				.sum();
 	}
 	
-	public static long parseShortenedNumber(String shtnumber) { return parseShortenedNumber(shtnumber, Multipliers.defaultMultipliers()); }
+	public static long parseShortenedNumber(String shtnumber) { 
+		return parseShortenedNumber(shtnumber, Multipliers.defaultMultipliers()); 
+	}
+	
 	public static long parseShortenedNumber(String shtnumber, Map<String, Long> multipliers) {
 		String snumber = "", smultiplier = "";
 		for(int i = shtnumber.length()-1; i >= 0; i--) if(Character.isDigit(shtnumber.charAt(i))) {
@@ -105,6 +109,29 @@ public class FormattingUtils {
 		}
 		
 		return result;
+	}
+	
+	public static String digestShortenedNumber(long number) {
+		return digestShortenedNumber(number, Multipliers.defaultMultipliers());
+	}
+	
+	public static String digestShortenedNumber(long number, Map<String, Long> multipliers) {
+		Collection<Map.Entry<String, Long>> entries = multipliers.entrySet().stream()
+			.sorted((e1, e2) -> e2.getValue().compareTo(e1.getValue()))
+			.collect(Collectors.toList());
+		
+		String res = "";
+		for(Map.Entry<String, Long> entry : entries) {
+            long div = number / entry.getValue();
+            long mod = number % entry.getValue();
+            
+			if(div <= 0) continue;
+			
+			res += String.valueOf(div) + entry.getKey() + " ";
+			number = mod;
+		}
+		
+		return res.substring(0, res.length()-1);
 	}
 	
 	public static PlaceholderParser newParser() {

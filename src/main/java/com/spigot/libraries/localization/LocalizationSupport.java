@@ -7,4 +7,8 @@ public interface LocalizationSupport {
 	public String getLocale();
 	
 	public void reloadSupport();
+	
+	public default String getRawText(String key) {
+		return getLocalizedText(key);
+	};
 }
