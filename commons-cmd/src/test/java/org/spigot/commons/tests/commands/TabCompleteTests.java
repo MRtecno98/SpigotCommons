@@ -19,7 +19,7 @@ public class TabCompleteTests {
 		assertEquals(TabCompleteTestCommand.CONTROL_DATA, test);
 		
 		test = cmd.onTabComplete(null, null, "test", new String[] { "aaaa" });
-		assertEquals(TabCompleteTestCommand.CONTROL_DATA, test);
+		assertEquals(Collections.emptyList(), test);
 	}
 
 	@Test

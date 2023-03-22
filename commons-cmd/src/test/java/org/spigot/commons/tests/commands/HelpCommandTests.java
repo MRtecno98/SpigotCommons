@@ -1,12 +1,12 @@
 package org.spigot.commons.tests.commands;
 
-import static org.junit.Assert.assertEquals;
+import org.junit.Test;
+import org.spigot.commons.commands.builtin.HelpCommand;
+import org.spigot.commons.tests.TrackSender;
 
 import java.util.Arrays;
 
-import org.junit.Test;
-import org.spigot.commons.commands.HelpCommand;
-import org.spigot.commons.tests.TrackSender;
+import static org.junit.Assert.assertEquals;
 
 public class HelpCommandTests {
 	public static final String CONTROL_DESCRIPTION = "<arg1> <arg2>";

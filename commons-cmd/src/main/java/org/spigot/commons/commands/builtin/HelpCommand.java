@@ -1,6 +1,8 @@
-package org.spigot.commons.commands;
+package org.spigot.commons.commands.builtin;
 
 import org.bukkit.command.CommandSender;
+import org.spigot.commons.commands.Command;
+import org.spigot.commons.commands.ExecutionContext;
 import org.spigot.commons.commands.annotations.Help;
 
 import lombok.Builder;
