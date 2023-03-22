@@ -1,11 +1,7 @@
 package org.spigot.commons.commands;
 
 import java.lang.reflect.Field;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-import java.util.Optional;
+import java.util.*;
 import java.util.stream.Collectors;
 
 import org.bukkit.command.CommandExecutor;
@@ -126,11 +122,15 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 	@Override
 	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label,
 			String[] args) {
-		// Spigot adds an empty string at the end of the arguments to signal a space press
-		// A space press signals that we need to autocomplete, but if that is not present
-		// we need to replace the previous value
-		if(args.length > 0 && args[args.length - 1] != "")
-				args[args.length - 1] = "";
+		// Last argument is the "crumb", the word the user is currently typing
+		// If it is not empty, we need to filter the completions for it
+		// In any case, we need to remove it from the arguments list(otherwise we'll fail
+		// to find the next command to execute, because the crumb won't be a valid subcommand)
+
+		final String crumb = args.length > 0 && args[args.length - 1] != "" ? args[args.length - 1] : "";
+
+		if(!crumb.equals(""))
+			args[args.length - 1] = "";
 
 		List<String> arguments = Arrays.asList(args);
 		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
@@ -142,11 +142,12 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex),
 				nextCommand);
 
+		List<String> completions;
 		if (!nextCommand.isPresent())
 			if (finalIndex >= getMinimumArguments())
-				return getSubcommands().stream().map(Command::getLabel).collect(Collectors.toList());
+				completions = getSubcommands().stream().map(Command::getLabel).collect(Collectors.toList());
 			else
-				return tabComplete(sender, context);
+				completions = tabComplete(sender, context);
 		else {
 			// Cut away all arguments we already processed AND the subcommand label
 			// Delimiters are i + 1(to cut away the label) and the list size
@@ -154,8 +155,10 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 			String[] subArgs = finalIndex != arguments.size() ? arguments.subList(finalIndex + 1, arguments.size())
 					.toArray(new String[arguments.size() - finalIndex - 1]) : new String[0];
 
-			return nextCommand.get().onTabComplete(sender, bukkitCommand, finalNextLabel, subArgs);
+			completions = nextCommand.get().onTabComplete(sender, bukkitCommand, finalNextLabel, subArgs);
 		}
+
+		return completions != null ? completions.stream().filter((s) -> s.startsWith(crumb)).collect(Collectors.toList()) : Collections.emptyList();
 	}
 
 	// Using an external method to share it between onCommand and onTabComplete
@@ -164,7 +167,6 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 
 		String nextLabel = null;
 		Optional<Command> nextCommand = Optional.empty();
-		List<String> callArguments = new ArrayList<>();
 
 		int i;
 		for (i = 0; i < arguments.size(); i++) {
@@ -175,7 +177,6 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 				nextLabel = arg;
 				break;
 			} else {
-				callArguments.add(arg);
 				nextCommand = Optional.empty();
 			}
 		}
@@ -212,10 +213,9 @@ public abstract class Command implements CommandExecutor, TabCompleter {
 	 */
 	public void unregister(JavaPlugin plugin) {
 		try {
-			getPluginCommand(plugin).unregister((SimpleCommandMap) CommonReflection
-					.getPrivateField(plugin.getServer().getPluginManager(), "commandMap"));
+			getPluginCommand(plugin).unregister(CommonReflection.getPrivateField(plugin.getServer().getPluginManager(), "commandMap"));
 		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			e.printStackTrace();
+			throw new RuntimeException("Failed to unregister command " + getLabel(), e);
 		}
 	}
 

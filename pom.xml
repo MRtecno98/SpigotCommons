@@ -55,7 +55,7 @@
 
 		<repository>
 			<id>tecno-repo</id>
-			<url>https://repo.mrtecno.tk/repository/public-maven</url>
+			<url>https://repo.mrtecno.dev/repository/public-maven</url>
 		</repository>
 	</repositories>
 
@@ -100,7 +100,7 @@
 		<snapshotRepository>
 			<id>tecno-repo</id>
 			<name>MRtecno98 Public Snapshot Repository</name>
-			<url>https://repo.mrtecno.tk/repository/maven-snapshot/</url>
+			<url>https://repo.mrtecno.dev/repository/maven-snapshot/</url>
 		</snapshotRepository>
 	</distributionManagement>
 
@@ -145,6 +145,7 @@
 					<archive>
 						<manifestEntries>
 							<Built-By>MRtecno98</Built-By>
+							<!--suppress UnresolvedMavenProperty -->
 							<SCM-Revision>${git.commit.id.abbrev}</SCM-Revision>
 						</manifestEntries>
 					</archive>
