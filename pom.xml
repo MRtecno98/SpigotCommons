@@ -13,6 +13,7 @@
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
 		<project.build.resourceEncoding>UTF-8</project.build.resourceEncoding>
 		<delombok.output>${project.basedir}/target/delombok</delombok.output>
+		<lombok.version>1.18.30</lombok.version>
 	</properties>
 
 	<modules>
@@ -72,7 +73,7 @@
 		<dependency>
 			<groupId>org.projectlombok</groupId>
 			<artifactId>lombok</artifactId>
-			<version>1.18.26</version>
+			<version>${lombok.version}</version>
 			<scope>provided</scope>
 		</dependency>
 
@@ -133,6 +134,14 @@
 				<configuration>
 					<source>17</source>
 					<target>17</target>
+
+					<annotationProcessorPaths>
+						<path>
+							<groupId>org.projectlombok</groupId>
+							<artifactId>lombok</artifactId>
+							<version>${lombok.version}</version>
+						</path>
+					</annotationProcessorPaths>
 				</configuration>
 			</plugin>
 
@@ -184,6 +193,14 @@
 						</goals>
 					</execution>
 				</executions>
+
+				<dependencies>
+					<dependency>
+						<groupId>org.projectlombok</groupId>
+						<artifactId>lombok</artifactId>
+						<version>${lombok.version}</version>
+					</dependency>
+				</dependencies>
 			</plugin>
 
 			<plugin>
