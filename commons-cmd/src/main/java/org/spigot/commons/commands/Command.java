@@ -1,301 +1,71 @@
 package org.spigot.commons.commands;
 
-import java.lang.reflect.Field;
-import java.util.*;
-import java.util.stream.Collectors;
-
+import lombok.Getter;
 import org.bukkit.command.CommandExecutor;
 import org.bukkit.command.CommandSender;
-import org.bukkit.command.PluginCommand;
-import org.bukkit.command.SimpleCommandMap;
 import org.bukkit.command.TabCompleter;
-import org.bukkit.plugin.java.JavaPlugin;
-import org.spigot.commons.commands.annotations.Inherit;
-import org.spigot.commons.commands.annotations.NoInherit;
-import org.spigot.commons.util.CommonReflection;
-import org.spigot.commons.util.Strings;
-import org.spigot.commons.util.Triplet;
+import org.jetbrains.annotations.Nullable;
+import org.spigot.commons.commands.arguments.Argument;
+import org.spigot.commons.commands.flags.FlaggedNode;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.List;
+import java.util.stream.Stream;
 
-/**
- * Represents a basic executable command or subcommand, without any logic other
- * than argument parsing and subcommand chain calling <br>
- * <br>
- * 
- * A basic usage may be just implementing the
- * {@link #execute(CommandSender, ExecutionContext)} method and registering the
- * command with the {@link #register(JavaPlugin)} method
- * 
- * @author MRtecno98
- * @since 2.0.0
- */
 @Getter
-@NoInherit
-@RequiredArgsConstructor
-public abstract class Command implements CommandExecutor, TabCompleter {
-	private final String label;
-	private int minimumArguments = 0;
-	private Collection<Command> subcommands = new ArrayList<>();
+public abstract class Command extends FlaggedNode implements CommandExecutor, TabCompleter {
+	private final String name;
+	private final Collection<String> aliases;
 
-	public Command(String label, int minimumArguments) {
-		this(label);
-		this.minimumArguments = minimumArguments;
-	}
+	private final List<Argument<?>> arguments = new ArrayList<>();
 
-	/**
-	 * Runs all the command logic other than argument parsing and the calling of
-	 * subcommands, it is called automatically by the onCommand method if correctly
-	 * registered to Bukkit.
-	 * 
-	 * @see CommandExecutor#onCommand(CommandSender, org.bukkit.command.Command,
-	 *      String, String[])
-	 * @param sender  an object representing the source of the command
-	 * @param context a data instance containing various context information about
-	 *                this particular execution
-	 * @return If true, stops the command chain call even if there are more
-	 *         subcommands entered by the user
-	 */
-	public abstract boolean execute(CommandSender sender, ExecutionContext context);
-
-	public List<String> tabComplete(CommandSender sender, ExecutionContext context) {
-		return null;
+	public Command(String name, String... aliases) {
+		this.name = name;
+		this.aliases = List.of(aliases);
 	}
 
 	@Override
-	public synchronized boolean onCommand(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label,
-			String[] args) {
-		List<String> arguments = Arrays.asList(args);
-		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
-
-		final Optional<Command> nextCommand = nextExec.getA();
-		final int finalIndex = nextExec.getB();
-		final String finalNextLabel = nextExec.getC();
-
-		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex),
-				nextCommand);
-		if (execute(sender, context))
+	public boolean precondition(ExecutionContext context) {
+		if(super.precondition(context) && checkLabel(context.args().peek())) {
+			context.args().pop();
 			return true;
+		} else return false;
+	}
 
-		nextCommand.ifPresent((next) -> {
-			try {
-				for (Field f : getClass().getDeclaredFields()) {
-					boolean inherit = !getClass().isAnnotationPresent(NoInherit.class);
-					inherit &= !f.isAnnotationPresent(NoInherit.class);
-					inherit |= f.isAnnotationPresent(Inherit.class);
+	public boolean checkLabel(@Nullable String label) {
+		return name().equals(label) || aliases().contains(label);
+	}
 
-					if (!inherit || f.getName().contains("$"))
-						continue;
+	public int size() {
+		return arguments().stream().map(Argument::minSize).reduce(0, Integer::sum);
+	}
 
-					Field nextF;
-					try {
-						nextF = next.getClass().getDeclaredField(f.getName());
-					} catch (NoSuchFieldException exc) {
-						continue;
-					}
+	@Override
+	public Stream<Node> stream(ExecutionContext context) {
+		Stream<Node> args = arguments().stream()
+				.filter(a -> a.precondition(context))
+				.flatMap(a -> a.stream(context));
 
-					// Copy all data to inherited fields of next subcommand
-					f.setAccessible(true);
-					nextF.setAccessible(true);
-					nextF.set(next, f.get(this));
+		return Stream.concat(args, super.stream(context));
+	}
 
-					// Tried to reset values after transfer, bad idea
-					// f.set(this, CommonReflection.getDefaultValue(f.getType()));
-				}
-			} catch (IllegalArgumentException | IllegalAccessException e) {
-				throw new RuntimeException(e);
-			}
+	@Override
+	public boolean onCommand(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
+		if(!checkLabel(label)) return false;
 
-			// Cut away all arguments we already processed AND the subcommand label
-			// Delimiters are i + 1(to cut away the label) and the list size
-			// (a.k.a. end of the list), so final size will be the subtraction.
-			String[] subArgs = finalIndex != arguments.size() ? arguments.subList(finalIndex + 1, arguments.size())
-					.toArray(new String[arguments.size() - finalIndex - 1]) : new String[0];
-
-			next.onCommand(sender, bukkitCommand, finalNextLabel, subArgs);
-		});
+		ExecutionContext ctx = ExecutionContext.of(sender, cmd, label, args);
+		traverse(ctx, NodeVisitor.EXECUTE);
 
 		return true;
 	}
 
 	@Override
-	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command bukkitCommand, String label,
-			String[] args) {
-		// Last argument is the "crumb", the word the user is currently typing
-		// If it is not empty, we need to filter the completions for it
-		// In any case, we need to remove it from the arguments list(otherwise we'll fail
-		// to find the next command to execute, because the crumb won't be a valid subcommand)
+	public List<String> onTabComplete(CommandSender sender, org.bukkit.command.Command cmd, String label, String[] args) {
+		if(!checkLabel(label)) return null;
 
-		final String crumb = args.length > 0 && args[args.length - 1] != "" ? args[args.length - 1] : "";
+		ExecutionContext ctx = ExecutionContext.of(sender, cmd, label, args);
 
-		if(!crumb.equals(""))
-			args[args.length - 1] = "";
-
-		List<String> arguments = Arrays.asList(args);
-		Triplet<Optional<Command>, Integer, String> nextExec = getNextExecution(args);
-
-		final Optional<Command> nextCommand = nextExec.getA();
-		final int finalIndex = nextExec.getB();
-		final String finalNextLabel = nextExec.getC();
-
-		ExecutionContext context = new ExecutionContext(label, bukkitCommand, arguments.subList(0, finalIndex),
-				nextCommand);
-
-		List<String> completions;
-		if (!nextCommand.isPresent())
-			if (finalIndex >= getMinimumArguments())
-				completions = getSubcommands().stream().map(Command::getLabel).collect(Collectors.toList());
-			else
-				completions = tabComplete(sender, context);
-		else {
-			// Cut away all arguments we already processed AND the subcommand label
-			// Delimiters are i + 1(to cut away the label) and the list size
-			// (a.k.a. end of the list), so final size will be the subtraction.
-			String[] subArgs = finalIndex != arguments.size() ? arguments.subList(finalIndex + 1, arguments.size())
-					.toArray(new String[arguments.size() - finalIndex - 1]) : new String[0];
-
-			completions = nextCommand.get().onTabComplete(sender, bukkitCommand, finalNextLabel, subArgs);
-		}
-
-		return completions != null ? completions.stream().filter((s) -> s.startsWith(crumb)).collect(Collectors.toList()) : Collections.emptyList();
-	}
-
-	// Using an external method to share it between onCommand and onTabComplete
-	private Triplet<Optional<Command>, Integer, String> getNextExecution(String[] args) {
-		List<String> arguments = Arrays.asList(Strings.stripEmpty(args));
-
-		String nextLabel = null;
-		Optional<Command> nextCommand = Optional.empty();
-
-		int i;
-		for (i = 0; i < arguments.size(); i++) {
-			String arg = arguments.get(i);
-			nextCommand = getSubcommands().stream().filter((cmd) -> cmd.checkLabel(arg)).findAny();
-
-			if (nextCommand.isPresent() && i >= getMinimumArguments()) {
-				nextLabel = arg;
-				break;
-			} else {
-				nextCommand = Optional.empty();
-			}
-		}
-
-		return new Triplet<>(nextCommand, i, nextLabel);
-	}
-
-	/**
-	 * Registers this Command instance to the Bukkit
-	 * {@link org.bukkit.command.CommandMap CommandMap} singleton instance.<br>
-	 * Should not be ran if you don't expect this Command to be executed by itself
-	 * without a parent supercommand.
-	 * 
-	 * @param plugin a plugin instance to link this command to, if the plugin
-	 *               doesn't have a command entry in its <code>plugin.yml</code><br>
-	 *               for this command label, this will try to create one on-the-fly
-	 *               using reflection.
-	 * 
-	 * @see #unregister(JavaPlugin)
-	 * @see #getPluginCommand(JavaPlugin)
-	 * @see CommonReflection#registerToCommandMap(JavaPlugin,
-	 *      org.bukkit.command.Command)
-	 */
-	public void register(JavaPlugin plugin) {
-		getPluginCommand(plugin).setExecutor(this);
-	}
-
-	/**
-	 * If previously registered, unregisters this command from the Bukkit
-	 * {@link org.bukkit.command.CommandMap CommandMap}
-	 * 
-	 * @param plugin the plugin instance this command was registered with
-	 * @see #register(JavaPlugin)
-	 */
-	public void unregister(JavaPlugin plugin) {
-		try {
-			getPluginCommand(plugin).unregister(CommonReflection.getPrivateField(plugin.getServer().getPluginManager(), "commandMap"));
-		} catch (SecurityException | NoSuchFieldException | IllegalArgumentException | IllegalAccessException e) {
-			throw new RuntimeException("Failed to unregister command " + getLabel(), e);
-		}
-	}
-
-	/**
-	 * Provides an instance of {@link PluginCommand} for this command linked to the
-	 * provided plugin, <br>
-	 * either using a <code>plugin.yml</code> entry or by constructing one from
-	 * scratch on-the-fly using reflection.
-	 * 
-	 * @param pl the plugin instance to link this entry to
-	 * @return An instance of {@link PluginCommand} specific for this command
-	 * 
-	 * @see CommonReflection#constructPluginCommand(String,
-	 *      org.bukkit.plugin.Plugin)
-	 */
-	public PluginCommand getPluginCommand(JavaPlugin pl) {
-		return providePluginCommand(pl, getLabel());
-	}
-
-	/**
-	 * Checks if the given label identifies this command, a unique match is not
-	 * required
-	 * 
-	 * @param target a {@link String} to check for
-	 * @return <code>true</code> if this label does correspond to this command,
-	 *         <code>false</code> otherwise
-	 */
-	public boolean checkLabel(String target) {
-		return getLabel().equalsIgnoreCase(target);
-	}
-
-	/**
-	 * Register the specified {@link Command} as a subcommand of this command,
-	 * making this instance its parent(or <i>supercommand</i>)
-	 * 
-	 * @param cmd the instance to register as subcommand
-	 * @return This command instance
-	 */
-	public synchronized Command registerSubcommand(Command cmd) {
-		getSubcommands().add(cmd);
-		return this;
-	}
-
-	public synchronized Command registerSubcommand(Command... cmds) {
-		Arrays.asList(cmds).forEach(getSubcommands()::add);
-		return this;
-	}
-
-	/**
-	 * Unregisters one or more subcommands with the given label
-	 * 
-	 * @param label all subcommands associated to this label(according to
-	 *              {@link #checkLabel(String)} will be removed)
-	 * @return <code>true</code> if any elements were removed
-	 */
-	public synchronized boolean unregisterSubcommand(final String label) {
-		return getSubcommands().removeIf((cmd) -> cmd.checkLabel(label));
-	}
-
-	/**
-	 * Unregisters every subcommand registered to this command
-	 */
-	public synchronized void unregisterAllSubcommands() {
-		getSubcommands().clear();
-	}
-
-	/**
-	 * If a PluginCommand is available for this label, returns it, otherwise
-	 * constructs it using reflection
-	 * 
-	 * @param plugin the plugin instance linked to this label
-	 * @param name   a command label to get the PluginCommand for
-	 * @return A {@link PluginCommand} instance
-	 */
-	public static PluginCommand providePluginCommand(JavaPlugin plugin, String name) {
-		PluginCommand pcommand = plugin.getCommand(name);
-
-		if (pcommand == null)
-			pcommand = CommonReflection.constructPluginCommand(name, plugin);
-
-		return pcommand;
+		return traverse(ctx, NodeVisitor.TAB_COMPLETE).orElse(null);
 	}
 }
