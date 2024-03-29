@@ -1,75 +1,68 @@
 package org.spigot.commons.commands.arguments;
 
 import lombok.Getter;
+import lombok.Setter;
+import lombok.experimental.Tolerate;
 import org.spigot.commons.commands.ExecutionContext;
 import org.spigot.commons.commands.Node;
+import org.spigot.commons.commands.exceptions.ParseException;
 
 import java.util.List;
 import java.util.Objects;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
+import java.util.function.Function;
 
 @Getter
 public abstract class Argument<T> extends Node {
-	public static final Consumer<ExecutionContext> DEFAULT_ERROR =
-			ctx -> ctx.sender().sendMessage("Could not parse argument");
-
 	private final String name;
 	private final int minSize;
 	private final boolean optional;
-	private final Consumer<ExecutionContext> error;
 
-	public Argument(String name, int minSize, boolean optional, Consumer<ExecutionContext> error) {
+	private @Setter BiConsumer<ExecutionContext, ParseException> error =
+			(ctx, ex) -> ctx.sender().sendMessage("Could not parse \"" + ex.invalid() + "\"");
+	private @Setter Consumer<ExecutionContext> missing
+			= ctx -> ctx.sender().sendMessage("Missing argument \"" + name() + "\"");
+
+	public Argument(String name, int minSize, boolean optional) {
 		this.name = name;
 		this.minSize = minSize;
 		this.optional = optional;
-		this.error = error;
-	}
-
-	public Argument(String name, int minSize, Consumer<ExecutionContext> error) {
-		this(name, minSize, false, error);
 	}
 
 	public Argument(String name, int minSize) {
-		this(name, minSize, DEFAULT_ERROR);
+		this(name, minSize, false);
 	}
 
-	public Argument(String name, int minSize, boolean optional) {
-		this(name, minSize, optional, DEFAULT_ERROR);
-	}
-
-	public Argument(String name, Consumer<ExecutionContext> error) {
-		this(name, 1, error);
-	}
 
 	public Argument(String name) {
-		this(name, 1, DEFAULT_ERROR);
+		this(name, 1);
 	}
 
-	public Argument(String name, boolean optional) {
-		this(name, 1, optional, DEFAULT_ERROR);
+	@Tolerate
+	public Argument<T> error(Function<ParseException, String> message) {
+		error(Replies.senderMessage(message));
+		return this;
 	}
 
 	public abstract T parse(ExecutionContext ctx);
 
 	@Override
-	public boolean precondition(ExecutionContext ctx) {
+	public void execute(ExecutionContext ctx) {
 		try {
 			if(ctx.args().size() < minSize()) {
 				ctx.set(name(), null);
-				return optional();
-			}
-
-			ctx.set(name(), Objects.requireNonNull(parse(ctx)));
-		} catch (Exception ignored) {}
-
-		return true;
-	}
-
-	@Override
-	public void execute(ExecutionContext ctx) {
-		if(!ctx.data().containsKey(name())) {
-			error.accept(ctx);
+				if(!optional()) {
+					missing.accept(ctx);
+					ctx.cancel();
+				}
+			} else ctx.set(name(), Objects.requireNonNull(parse(ctx)));
+		} catch (ParseException exc) {
+			error.accept(ctx, exc);
 			ctx.cancel();
+		} catch(Exception e) {
+			ctx.cancel();
+			throw e;
 		}
 	}
 
