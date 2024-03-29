@@ -16,9 +16,9 @@ import java.util.concurrent.CompletionStage;
 import java.util.logging.Logger;
 import java.util.function.Function;
 
-public record DataHolder(DataSource source,
-						 Function<DataHolder, CompletableFuture<Void>> initializer) implements Closeable {
-	public DataHolder(DataSource source) {
+public record DataDriver(DataSource source,
+						 Function<DataDriver, CompletableFuture<Void>> initializer) implements Closeable {
+	public DataDriver(DataSource source) {
 		this(source, driver -> CompletableFuture.completedFuture(null));
 	}
 
@@ -92,11 +92,11 @@ public record DataHolder(DataSource source,
 		}
 
 		public CompletableFuture<Integer> executeUpdate() {
-			return thenApply(DataHolder.this::executeUpdate);
+			return thenApply(DataDriver.this::executeUpdate);
 		}
 
 		public ResultFuture executeQuery() {
-			return new ResultFuture(thenApply(DataHolder.this::executeQuery));
+			return new ResultFuture(thenApply(DataDriver.this::executeQuery));
 		}
 
 		public StatementFuture apply(ThrowingConsumer<PreparedStatement, SQLException> applier) {
