@@ -8,7 +8,7 @@ public class StringArgument extends FixedArgument<String> {
 	}
 
 	public StringArgument(String name, boolean optional) {
-		super(name, 1, optional);
+		super(name, optional);
 	}
 
 	@Override

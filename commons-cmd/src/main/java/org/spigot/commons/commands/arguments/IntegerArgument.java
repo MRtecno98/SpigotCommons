@@ -8,7 +8,7 @@ public class IntegerArgument extends FixedArgument<Integer> {
 	}
 
 	public IntegerArgument(String name, boolean optional) {
-		super(name, 1, optional);
+		super(name, optional);
 
 		error(exc -> "Could not parse \"" + exc.invalid() + "\"");
 	}

@@ -10,7 +10,7 @@ public class PlayerArgument extends FixedArgument<Player> {
 	}
 
 	public PlayerArgument(String name, boolean optional) {
-		super(name, 1, optional);
+		super(name, optional);
 
 		error(exc -> "Player \"" + exc.invalid() + "\" not found");
 	}
