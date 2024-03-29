@@ -1,97 +1,141 @@
 package org.spigot.commons.data;
 
-import lombok.Getter;
-import lombok.RequiredArgsConstructor;
-import org.apache.commons.lang.StringUtils;
-import org.spigot.commons.data.query.Query;
-import org.spigot.commons.data.query.Target;
-import org.spigot.commons.data.query.builtin.TargetedQuery;
 
-import java.util.Arrays;
-import java.util.Map;
+import org.spigot.commons.util.ThrowingConsumer;
+import org.spigot.commons.util.ThrowingFunction;
+
+import javax.sql.DataSource;
+import java.io.Closeable;
+import java.io.IOException;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.concurrent.CompletableFuture;
-import java.util.concurrent.ConcurrentHashMap;
+import java.util.concurrent.CompletionStage;
+import java.util.logging.Logger;
+import java.util.function.Function;
 
-@Getter
-@RequiredArgsConstructor
-public abstract class DataDriver<PreparedStatement, BoundStatement, Result> implements AutoCloseable {
-	private final Query[] queries;
-
-	private transient final Map<Integer, PreparedStatement> prepared = new ConcurrentHashMap<>();
-
-	public DataDriver(Class<? extends Query> enumClass) {
-		this(enumClass.getEnumConstants());
-
-		if(!enumClass.isEnum())
-			throw new IllegalArgumentException("Queries class must be an enum");
+public record DataDriver(DataSource source,
+						 Function<DataDriver, CompletableFuture<Void>> initializer) implements Closeable {
+	public DataDriver(DataSource source) {
+		this(source, driver -> CompletableFuture.completedFuture(null));
 	}
 
 	public CompletableFuture<Void> init() {
-		return prepare();
+		return initializer().apply(this);
 	}
 
-	public CompletableFuture<Void> prepare() {
-		return CompletableFuture.allOf(Arrays.stream(queries)
-				.filter(q -> !(StringUtils.countMatches(q.format(), "%s") > 1))
-				.map(q -> prepare(fill(q, q.availableTargets())))
-				.toArray(CompletableFuture[]::new));
+	public Connection getConnection() {
+		try {
+			return source.getConnection();
+		} catch (Exception e) {
+			throw new RuntimeException("Failed to obtain connection", e);
+		}
 	}
 
-	public String fill(Query q, Target[] targets) {
-		return String.format(q.format(), (Object[]) targets);
+	public StatementFuture prepareStatement(String sql) {
+		return new StatementFuture(CompletableFuture.supplyAsync(() -> {
+			try {
+				return getConnection().prepareStatement(sql);
+			} catch (Exception e) {
+				throw new RuntimeException("Failed to prepare statement", e);
+			}
+		}));
 	}
 
-	public CompletableFuture<BoundStatement> fill(Query q, Target[] targets, Object... args) {
-		final int key = TargetedQuery.hashCode(q, targets);
-		if(!prepared().containsKey(key))
-			return prepare(fill(q, targets)).thenCompose(st -> {
-				addPrepared(key, st);
-				return fill(st, args);
+	public int executeUpdate(PreparedStatement statement) {
+		try {
+			return statement.executeUpdate();
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to execute update", e);
+		} finally {
+			try {
+				statement.getConnection().close();
+			} catch (SQLException e) {
+				Logger.getAnonymousLogger()
+						.throwing("DataDriver", "executeUpdate", e);
+			}
+		}
+	}
+
+	public ResultSet executeQuery(PreparedStatement statement) {
+		try {
+			return statement.executeQuery();
+		} catch (SQLException e) {
+			throw new RuntimeException("Failed to execute query", e);
+		}
+	}
+
+	@Override
+	public void close() throws IOException {
+		if (source instanceof Closeable closeable)
+			closeable.close();
+	}
+
+	// Just a wrapper around CompletableFuture<PreparedStatement> that
+	// adds some utility methods for convenience's sake
+	public class StatementFuture extends CompletableFuture<PreparedStatement> {
+		public StatementFuture(CompletionStage<PreparedStatement> delegate) {
+			delegate.whenComplete((t, throwable) -> {
+				if (throwable != null)
+					completeExceptionally(throwable);
+				else
+					complete(t);
 			});
-		else return CompletableFuture.completedFuture(prepared().get(key)).thenCompose(st -> fill(st, args));
-	}
 
-	public CompletableFuture<Result> query(Query q, Target[] targets, Object... args) {
-		return fill(q, targets, args).thenCompose(this::query);
-	}
+			whenComplete((t, throwable) -> {
+				if (throwable != null)
+					Logger.getAnonymousLogger()
+							.throwing("DataDriver.StatementFuture", "whenComplete", throwable);
+			});
+		}
 
-	public CompletableFuture<Integer> update(Query q, Target[] targets, Object... args) {
-		return fill(q, targets, args).thenCompose(this::update);
-	}
+		public CompletableFuture<Integer> executeUpdate() {
+			return thenApply(DataDriver.this::executeUpdate);
+		}
 
-	protected void addPrepared(Integer hashCode, PreparedStatement statement) {
-		prepared.put(hashCode, statement);
-	}
+		public ResultFuture executeQuery() {
+			return new ResultFuture(thenApply(DataDriver.this::executeQuery));
+		}
 
-	protected void addPrepared(Query q, PreparedStatement statement, Target... targets) {
-		addPrepared(TargetedQuery.hashCode(q, targets), statement);
-	}
-	public abstract CompletableFuture<PreparedStatement> prepare(String query);
-	public abstract CompletableFuture<Result> query(BoundStatement st);
-	public abstract CompletableFuture<Integer> update(BoundStatement st);
-	public abstract CompletableFuture<BoundStatement> fill(PreparedStatement st, Object... args);
+		public StatementFuture apply(ThrowingConsumer<PreparedStatement, SQLException> applier) {
+			return new StatementFuture(thenApply(t -> {
+				applier.accept(t);
+				return t;
+			}));
+		}
 
-	public CompletableFuture<Result> query(TargetedQuery q, Object... args) {
-		return query(q, q.targets(), args);
-	}
+		public static class ResultFuture extends CompletableFuture<ResultSet> {
+			ResultFuture(CompletionStage<ResultSet> delegate) {
+				delegate.whenComplete((t, throwable) -> {
+					if (throwable != null)
+						completeExceptionally(throwable);
+					else
+						complete(t);
+				});
 
-	public CompletableFuture<Result> query(Query q, Target target, Object... args) {
-		return query(q, new Target[] { target }, args);
-	}
+				whenComplete((t, throwable) -> {
+					if (throwable != null)
+						Logger.getAnonymousLogger()
+								.throwing("DataDriver.StatementFuture.ResultFuture", "whenComplete", throwable);
+				});
+			}
 
-	public CompletableFuture<Result> query(Query q, Target t1, Target t2, Object... args) {
-		return query(q, new Target[] { t1, t2 }, args);
-	}
-
-	public CompletableFuture<Result> update(TargetedQuery q, Object... args) {
-		return update(q, q.targets(), args);
-	}
-
-	public CompletableFuture<Integer> update(Query q, Target target, Object... args) {
-		return update(q, new Target[] { target }, args);
-	}
-
-	public CompletableFuture<Integer> update(Query q, Target t1, Target t2, Object... args) {
-		return update(q, new Target[] { t1, t2 }, args);
+			public <T> CompletableFuture<T> apply(ThrowingFunction<ResultSet, T, SQLException> applier) {
+				return thenApply(r -> {
+					try {
+						return applier.apply(r);
+					} finally {
+						try {
+							r.getStatement().getConnection().close();
+						} catch (SQLException e) {
+							Logger.getAnonymousLogger()
+									.throwing("DataDriver.StatementFuture.ResultFuture", "apply", e);
+						}
+					}
+				});
+			}
+		}
 	}
 }
