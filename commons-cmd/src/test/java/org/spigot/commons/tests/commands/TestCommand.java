@@ -14,7 +14,8 @@ public class TestCommand extends Command {
 			  CommandFlags.permission("msg.greet")
 					  .withError("&cYou do not have permission to use this command"));
 
-		arguments().add(new PlayerArgument("target", true));
+		arguments().add(new PlayerArgument("target", true)
+				.error(exc -> "&cCould not find player \"" + exc.invalid() + "\""));
 	}
 
 	@Override

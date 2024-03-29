@@ -23,6 +23,6 @@ public class ExecutionTests extends BukkitTests {
 
 		assertEquals("Hello, Herobrine!", p.nextMessage());
 		assertEquals("Hello, Notch!", p.nextMessage());
-		assertEquals("Player not found", p.nextMessage());
+		assertEquals("&cCould not find player \"Dinnerbone\"", p.nextMessage());
 	}
 }
