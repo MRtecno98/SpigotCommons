@@ -1,25 +1,55 @@
 package org.spigot.commons.data;
 
-
+import org.spigot.commons.util.Strings;
 import org.spigot.commons.util.ThrowingConsumer;
 import org.spigot.commons.util.ThrowingFunction;
 
 import javax.sql.DataSource;
 import java.io.Closeable;
 import java.io.IOException;
+import java.io.InputStream;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Objects;
 import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.CompletionStage;
 import java.util.logging.Logger;
 import java.util.function.Function;
 
+import lombok.SneakyThrows;
+
 public record DataDriver(DataSource source,
+						 ClassLoader scriptLoader,
 						 Function<DataDriver, CompletableFuture<Void>> initializer) implements Closeable {
+	public DataDriver(DataSource source, ClassLoader scriptLoader) {
+		this(source, scriptLoader, _ -> CompletableFuture.completedFuture(null));
+	}
+
 	public DataDriver(DataSource source) {
-		this(source, driver -> CompletableFuture.completedFuture(null));
+		this(source, DataDriver.class.getClassLoader());
+	}
+
+	public DataDriver(DataSource source, Function<DataDriver, CompletableFuture<Void>> initializer) {
+		this(source, DataDriver.class.getClassLoader(), initializer);
+	}
+
+	public DataDriver(DataSource source, ClassLoader scriptLoader, InputStream script, Object... args) {
+		this(source, scriptLoader, driver ->
+				driver.prepareScript(script, args).executeUpdate().thenAccept(_ -> {}));
+	}
+
+	public DataDriver(DataSource source, ClassLoader scriptLoader, String script, Object... args) {
+		this(source, scriptLoader, scriptLoader.getResourceAsStream(script), args);
+	}
+
+	public DataDriver(DataSource source, InputStream script, Object... args) {
+		this(source, DataDriver.class.getClassLoader(), script, args);
+	}
+
+	public DataDriver(DataSource source, String script, Object... args) {
+		this(source, DataDriver.class.getClassLoader(), script, args);
 	}
 
 	public CompletableFuture<Void> init() {
@@ -30,6 +60,8 @@ public record DataDriver(DataSource source,
 		try {
 			return source.getConnection();
 		} catch (Exception e) {
+			Logger.getAnonymousLogger()
+					.throwing("DataDriver", "getConnection", e);
 			throw new RuntimeException("Failed to obtain connection", e);
 		}
 	}
@@ -44,10 +76,21 @@ public record DataDriver(DataSource source,
 		}));
 	}
 
+	@SneakyThrows
+	public StatementFuture prepareScript(InputStream script, Object... args) {
+		return prepareStatement(Strings.readAll(script).formatted(args));
+	}
+
+	public StatementFuture prepareScript(String script, Object... args) {
+		return prepareScript(Objects.requireNonNull(scriptLoader().getResourceAsStream(script)), args);
+	}
+
 	public int executeUpdate(PreparedStatement statement) {
 		try {
 			return statement.executeUpdate();
 		} catch (SQLException e) {
+			Logger.getAnonymousLogger()
+					.throwing("DataDriver", "executeUpdate", e);
 			throw new RuntimeException("Failed to execute update", e);
 		} finally {
 			try {
@@ -63,6 +106,8 @@ public record DataDriver(DataSource source,
 		try {
 			return statement.executeQuery();
 		} catch (SQLException e) {
+			Logger.getAnonymousLogger()
+					.throwing("DataDriver", "executeQuery", e);
 			throw new RuntimeException("Failed to execute query", e);
 		}
 	}
@@ -118,7 +163,8 @@ public record DataDriver(DataSource source,
 				whenComplete((t, throwable) -> {
 					if (throwable != null)
 						Logger.getAnonymousLogger()
-								.throwing("DataDriver.StatementFuture.ResultFuture", "whenComplete", throwable);
+								.throwing("DataDriver.StatementFuture.ResultFuture",
+										"whenComplete", throwable);
 				});
 			}
 
@@ -131,7 +177,8 @@ public record DataDriver(DataSource source,
 							r.getStatement().getConnection().close();
 						} catch (SQLException e) {
 							Logger.getAnonymousLogger()
-									.throwing("DataDriver.StatementFuture.ResultFuture", "apply", e);
+									.throwing("DataDriver.StatementFuture.ResultFuture",
+											"apply", e);
 						}
 					}
 				});
