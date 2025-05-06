@@ -46,7 +46,7 @@ public class Players {
 	}
 	
 	/**
-	 * <p>Checks if a name is linked to a premium(paid) account of Minecraft<p>
+	 * <p>Checks if a name is linked to a premium(paid) account of Minecraft</p>
 	 * 
 	 * <p><b>DO NOT USE THIS TO CHECK IF AN ONLINE PLAYER CURRENTLY ON THE SERVER IS CRACKED OR NOT</b><br>
 	 * 
