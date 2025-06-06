@@ -151,6 +151,13 @@ public record DataDriver(DataSource source,
 			}));
 		}
 
+		public StatementFuture applyIf(ThrowingConsumer<PreparedStatement, SQLException> applier,
+				boolean condition) {
+			if (condition)
+				return apply(applier);
+			else return this;
+		}
+
 		public static class ResultFuture extends CompletableFuture<ResultSet> {
 			ResultFuture(CompletionStage<ResultSet> delegate) {
 				delegate.whenComplete((t, throwable) -> {
